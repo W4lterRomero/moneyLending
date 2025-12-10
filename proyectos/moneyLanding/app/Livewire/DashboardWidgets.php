@@ -67,22 +67,31 @@ class DashboardWidgets extends Component
 
     protected function buildChartData(): array
     {
-        $months = collect(range(0, 5))
-            ->map(fn ($i) => Carbon::now()->subMonths($i)->startOfMonth())
-            ->sort()
-            ->values();
+        [$rangeStart, $rangeEnd] = $this->dateRange();
+
+        $months = collect();
+        $cursor = $rangeStart->copy()->startOfMonth();
+        $limit = 18; // evita gráficas interminables
+        while ($cursor->lte($rangeEnd) && $months->count() < $limit) {
+            $months->push($cursor->copy());
+            $cursor->addMonth();
+        }
 
         $labels = $months->map(fn ($m) => $m->format('M Y'));
 
-        $lent = $months->map(function ($month) {
+        $lent = $months->map(function ($month) use ($rangeEnd) {
+            $from = $month->copy()->startOfMonth();
+            $to = $month->copy()->endOfMonth()->min($rangeEnd);
             return DB::table('loans')
-                ->whereBetween('start_date', [$month->toDateString(), $month->copy()->endOfMonth()->toDateString()])
+                ->whereBetween('start_date', [$from->toDateString(), $to->toDateString()])
                 ->sum('principal');
         });
 
-        $collected = $months->map(function ($month) {
+        $collected = $months->map(function ($month) use ($rangeEnd) {
+            $from = $month->copy()->startOfMonth();
+            $to = $month->copy()->endOfMonth()->min($rangeEnd);
             return DB::table('payments')
-                ->whereBetween('paid_at', [$month->toDateString(), $month->copy()->endOfMonth()->toDateString()])
+                ->whereBetween('paid_at', [$from->toDateString(), $to->toDateString()])
                 ->sum('amount');
         });
 
@@ -95,10 +104,37 @@ class DashboardWidgets extends Component
 
     protected function statusCounts(): array
     {
+        [$start, $end] = $this->dateRange();
         $statuses = ['active', 'delinquent', 'completed'];
 
-        return collect($statuses)->mapWithKeys(function ($status) {
-            return [$status => DB::table('loans')->where('status', $status)->count()];
+        return collect($statuses)->mapWithKeys(function ($status) use ($start, $end) {
+            return [
+                $status => DB::table('loans')
+                    ->where('status', $status)
+                    ->whereBetween('start_date', [$start, $end])
+                    ->count()
+            ];
         })->toArray();
+    }
+
+    protected function dateRange(): array
+    {
+        $start = $this->start ? Carbon::parse($this->start) : null;
+        $end = $this->end ? Carbon::parse($this->end) : null;
+
+        if (!$start || !$end) {
+            [$start, $end] = match ($this->range) {
+                'today' => [now()->startOfDay(), now()->endOfDay()],
+                'week' => [now()->startOfWeek(), now()->endOfWeek()],
+                'year' => [now()->startOfYear(), now()->endOfYear()],
+                default => [now()->startOfMonth(), now()->endOfMonth()],
+            };
+        }
+
+        if ($start->gt($end)) {
+            [$start, $end] = [$end, $start];
+        }
+
+        return [$start->startOfDay(), $end->endOfDay()];
     }
 }
