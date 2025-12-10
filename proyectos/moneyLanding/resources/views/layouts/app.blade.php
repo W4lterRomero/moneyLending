@@ -11,9 +11,9 @@
     @livewireStyles
 </head>
 
-<body class="text-slate-800 surface-gradient dark:bg-[#0b1220]" x-data="{ mobileNav: false }">
+<body class="text-slate-800" x-data="{ mobileNav: false }">
     <div class="min-h-screen flex">
-        <aside class="w-72 hidden md:flex flex-col p-4 gap-4">
+        <aside class="w-72 hidden md:flex flex-col p-4 gap-4 sidebar">
             <div class="panel-apple p-4">
                 <div class="text-xl font-semibold text-slate-900 flex items-center gap-2">
                     <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-sky-100 text-sky-600">
@@ -24,22 +24,22 @@
                 <div class="text-xs text-slate-500 mt-1">Gestión de préstamos</div>
             </div>
             <nav class="panel-apple flex-1 p-3 space-y-1 text-sm">
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-sky-50 {{ request()->routeIs('dashboard') ? 'bg-sky-50 text-sky-700' : '' }}">
+                <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') ? 'sidebar-link--active' : '' }}">
                     <x-icon name="chart-bar" class="w-4 h-4" /> Dashboard
                 </a>
-                <a href="{{ route('clients.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-sky-50 {{ request()->is('clients*') ? 'bg-sky-50 text-sky-700' : '' }}">
+                <a href="{{ route('clients.index') }}" class="sidebar-link {{ request()->is('clients*') ? 'sidebar-link--active' : '' }}">
                     <x-icon name="users" class="w-4 h-4" /> Clientes
                 </a>
-                <a href="{{ route('loans.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-sky-50 {{ request()->is('loans*') ? 'bg-sky-50 text-sky-700' : '' }}">
+                <a href="{{ route('loans.index') }}" class="sidebar-link {{ request()->is('loans*') ? 'sidebar-link--active' : '' }}">
                     <x-icon name="credit-card" class="w-4 h-4" /> Préstamos
                 </a>
-                <a href="{{ route('payments.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-sky-50 {{ request()->is('payments*') ? 'bg-sky-50 text-sky-700' : '' }}">
+                <a href="{{ route('payments.index') }}" class="sidebar-link {{ request()->is('payments*') ? 'sidebar-link--active' : '' }}">
                     <x-icon name="banknotes" class="w-4 h-4" /> Pagos
                 </a>
-                <a href="{{ route('reports.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-sky-50 {{ request()->is('reports*') ? 'bg-sky-50 text-sky-700' : '' }}">
+                <a href="{{ route('reports.index') }}" class="sidebar-link {{ request()->is('reports*') ? 'sidebar-link--active' : '' }}">
                     <x-icon name="document-chart" class="w-4 h-4" /> Reportes
                 </a>
-                <a href="{{ route('settings.business') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-sky-50 {{ request()->is('settings*') ? 'bg-sky-50 text-sky-700' : '' }}">
+                <a href="{{ route('settings.business') }}" class="sidebar-link {{ request()->is('settings*') ? 'sidebar-link--active' : '' }}">
                     <x-icon name="cog" class="w-4 h-4" /> Configuración
                 </a>
             </nav>
@@ -47,10 +47,10 @@
         </aside>
 
         <main class="flex-1">
-            <header class="sticky top-0 z-30 backdrop-blur bg-white/70 border-b border-slate-200/70">
+            <header class="sticky top-0 z-30 topbar-apple backdrop-blur">
                 <div class="px-4 md:px-6 h-16 flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <button class="md:hidden px-3 py-2 rounded-lg border border-slate-200 text-sm" aria-label="Abrir menú" @click="mobileNav = true">
+                        <button class="md:hidden px-3 py-2 rounded-lg text-sm hamburger-apple" aria-label="Abrir menú" @click="mobileNav = true">
                             <x-icon name="menu" class="w-5 h-5" />
                         </button>
                         <div class="text-sm text-slate-500">Sistema de Gestión de Préstamos</div>

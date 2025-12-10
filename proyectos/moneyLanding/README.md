@@ -64,9 +64,9 @@ Stack: Laravel 12 (PHP 8.2), Fortify, Livewire 3, Vite + Blade + Tailwind, MySQL
 
 ### Roadmap sugerido
 - Añadir importación CSV validada y UI para backups.
-- Conectar Scout a motor externo (Meili/Algolia) si se requiere fuzziness.
-- Sumar pruebas Dusk para flujos críticos (auth, creación de préstamo, pago).
-- Automatizar despliegue con Sail/GitHub Actions y publicar assets de Vite.
+ - Conectar Scout a motor externo (Meili/Algolia) si se requiere fuzziness.
+ - Sumar pruebas Dusk para flujos críticos (auth, creación de préstamo, pago).
+ - Automatizar despliegue con Sail/GitHub Actions y publicar assets de Vite.
 
 ### Pasos rápidos en WSL (usando Node en contenedor para evitar permisos)
 Si tienes problemas de permisos con npm en Windows/WSL, puedes compilar assets así:
@@ -85,3 +85,10 @@ php artisan serve  # o usa docker-compose up -d
 - **FullCalendar CSS**: se carga vía CDN en `layouts/app.blade.php`; asegúrate de tener red.
 - **Colas/Jobs**: arranca `php artisan queue:listen` si quieres notificaciones de vencimientos.
 - **Búsqueda global**: requiere `php artisan migrate --seed` para datos demo y que el backend esté arriba.
+
+### Un solo comando (local)
+Si tienes PHP, Composer y Node instalados, desde la raíz del proyecto:
+```bash
+bash setup.sh
+```
+Esto crea `.env` si falta, instala dependencias, genera key, migra/seed, crea storage:link, instala npm y compila assets.

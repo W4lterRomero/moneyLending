@@ -47,14 +47,7 @@
                             <td class="py-3 pr-4">{{ $client->email }}</td>
                             <td class="py-3 pr-4">{{ $client->phone }}</td>
                             <td class="py-3 pr-4">
-                                <span class="px-2 py-1 rounded-full text-xs font-semibold
-                                    @class([
-                                        'bg-sky-50 text-sky-700' => $client->status === 'active',
-                                        'bg-amber-50 text-amber-700' => $client->status === 'lead',
-                                        'bg-slate-100 text-slate-700' => $client->status === 'suspended',
-                                    ])">
-                                    {{ ucfirst($client->status) }}
-                                </span>
+                                <span class="status-badge {{ $client->status }}">{{ ucfirst($client->status) }}</span>
                             </td>
                             <td class="py-3 pr-4">
                                 <a href="{{ route('clients.edit', $client) }}" class="inline-flex items-center gap-1 text-sky-600 hover:underline text-sm">

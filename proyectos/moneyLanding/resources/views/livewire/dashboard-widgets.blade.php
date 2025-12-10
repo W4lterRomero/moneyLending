@@ -6,17 +6,17 @@
         </div>
         <form wire:submit.prevent="filter" class="flex flex-col md:flex-row md:items-center gap-2">
             <label class="text-xs text-slate-500" for="range">Rango</label>
-            <select id="range" wire:model.live="range" class="px-3 py-2 rounded-lg border border-slate-200 text-sm" aria-label="Seleccionar rango de fechas">
+            <select id="range" wire:model.defer="range" class="px-3 py-2 rounded-lg border border-slate-200 text-sm" aria-label="Seleccionar rango de fechas">
                 <option value="today">Hoy</option>
                 <option value="week">Semana</option>
                 <option value="month">Mes</option>
                 <option value="year">Año</option>
             </select>
             <label class="sr-only" for="start">Desde</label>
-            <input id="start" type="date" wire:model.live="start" class="px-3 py-2 rounded-lg border border-slate-200 text-sm"
+            <input id="start" type="date" wire:model.defer="start" class="px-3 py-2 rounded-lg border border-slate-200 text-sm"
                 aria-label="Fecha inicio">
             <label class="sr-only" for="end">Hasta</label>
-            <input id="end" type="date" wire:model.live="end" class="px-3 py-2 rounded-lg border border-slate-200 text-sm"
+            <input id="end" type="date" wire:model.defer="end" class="px-3 py-2 rounded-lg border border-slate-200 text-sm"
                 aria-label="Fecha fin">
             <button class="px-4 py-2 bg-sky-500 text-white rounded-lg">Filtrar</button>
         </form>
