@@ -6,12 +6,12 @@
         <a href="{{ route('clients.show', $client) }}" class="text-sm text-slate-500 hover:text-slate-700">Ver ficha</a>
     </div>
 
-    <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+    <div class="card p-5">
         <form method="POST" action="{{ route('clients.update', $client) }}" class="space-y-4" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             @include('clients._form')
-            <button class="px-4 py-2 bg-sky-500 text-white rounded-lg shadow">Actualizar</button>
+            <button class="btn-primary-apple">Actualizar</button>
         </form>
     </div>
 @endsection

@@ -8,11 +8,11 @@
     window.addEventListener('open-search', () => open = true);
 ">
     <div x-show="open" x-cloak class="fixed inset-0 bg-black/40 z-50 flex items-start justify-center pt-24">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-4 space-y-3">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-4 space-y-3 card">
             <div class="flex items-center gap-2">
                 <input type="text" wire:model.live.debounce.300ms="term" placeholder="Buscar clientes, préstamos, pagos..."
-                    class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring focus:ring-sky-100" />
-                <button @click="open = false" class="text-slate-500 hover:text-slate-700 text-sm">Cerrar</button>
+                    class="input-apple" />
+                <button @click="open = false" class="btn-outline-apple">Cerrar</button>
             </div>
 
             <div class="max-h-80 overflow-auto divide-y divide-slate-100">

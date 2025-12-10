@@ -13,8 +13,13 @@ class GlobalSearchService
     {
         $like = "%{$term}%";
 
-        $clients = Client::search($term)
-            ->take(5)
+        $clients = Client::query()
+            ->where(function ($q) use ($like) {
+                $q->where('name', 'like', $like)
+                    ->orWhere('email', 'like', $like)
+                    ->orWhere('phone', 'like', $like);
+            })
+            ->limit(5)
             ->get()
             ->map(fn ($c) => [
                 'type' => 'Cliente',
@@ -23,18 +28,28 @@ class GlobalSearchService
                 'url' => route('clients.show', $c),
             ]);
 
-        $loans = Loan::search($term)
-            ->take(5)
+        $loans = Loan::query()
+            ->with('client')
+            ->where(function ($q) use ($like) {
+                $q->where('code', 'like', $like)
+                    ->orWhereHas('client', fn ($cq) => $cq->where('name', 'like', $like));
+            })
+            ->limit(5)
             ->get()
             ->map(fn ($l) => [
                 'type' => 'Préstamo',
-                'title' => $l->code,
-                'subtitle' => $l->client?->name,
+                'title' => $l->client?->name ?? $l->code,
+                'subtitle' => $l->code,
                 'url' => route('loans.show', $l),
             ]);
 
-        $payments = Payment::search($term)
-            ->take(5)
+        $payments = Payment::query()
+            ->with('loan')
+            ->where(function ($q) use ($like) {
+                $q->where('reference', 'like', $like)
+                    ->orWhereHas('loan', fn ($lq) => $lq->where('code', 'like', $like));
+            })
+            ->limit(5)
             ->get()
             ->map(fn ($p) => [
                 'type' => 'Pago',
