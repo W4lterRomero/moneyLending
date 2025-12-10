@@ -18,7 +18,10 @@
             <label class="sr-only" for="end">Hasta</label>
             <input id="end" type="date" wire:model.defer="end" class="px-3 py-2 rounded-lg border border-slate-200 text-sm"
                 aria-label="Fecha fin">
-            <button class="px-4 py-2 bg-sky-500 text-white rounded-lg">Filtrar</button>
+            <div class="flex gap-2">
+                <button type="submit" class="px-4 py-2 bg-sky-500 text-white rounded-lg">Filtrar</button>
+                <button type="button" wire:click="resetFilters" class="px-4 py-2 border border-slate-200 rounded-lg text-sm hover:border-sky-300 hover:text-sky-600">Reset</button>
+            </div>
         </form>
     </div>
 
@@ -73,5 +76,10 @@
             </div>
             <canvas id="statusChart" wire:ignore data-status='@json($statusCounts)'></canvas>
         </div>
+    </div>
+
+    <div class="text-xs text-slate-500 flex items-center gap-2">
+        <span>Última actualización:</span>
+        <span class="font-semibold text-slate-700">{{ $refreshedAt }}</span>
     </div>
 </div>

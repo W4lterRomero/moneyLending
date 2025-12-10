@@ -15,6 +15,7 @@ class DashboardWidgets extends Component
     public array $metrics = [];
     public array $chartData = [];
     public array $statusCounts = [];
+    public string $refreshedAt = '';
 
     protected KpiAggregator $aggregator;
 
@@ -36,6 +37,14 @@ class DashboardWidgets extends Component
         $this->refreshData();
     }
 
+    public function resetFilters(): void
+    {
+        $this->range = 'month';
+        $this->start = null;
+        $this->end = null;
+        $this->refreshData();
+    }
+
     public function render()
     {
         return view('livewire.dashboard-widgets');
@@ -50,6 +59,7 @@ class DashboardWidgets extends Component
 
         $this->chartData = $this->buildChartData();
         $this->statusCounts = $this->statusCounts();
+        $this->refreshedAt = now()->format('d/m/Y H:i');
 
         // Notifica al front que debe redibujar los charts
         $this->dispatch('charts-refresh');
