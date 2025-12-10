@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Loans;
 
+use App\Enums\LoanStatus;
 use App\Models\Loan;
 use Livewire\Component;
 use BackedEnum;
@@ -36,7 +37,7 @@ class LoanKanban extends Component
         }
 
         $loan = Loan::findOrFail($loanId);
-        $loan->update(['status' => $status]);
+        $loan->update(['status' => LoanStatus::from($status)]);
 
         $this->dispatch('$refresh');
     }

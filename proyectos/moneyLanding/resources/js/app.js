@@ -51,7 +51,7 @@ window.initKanbanSortables = () => {
             animation: 150,
             onEnd: (event) => {
                 const loanId = event.item.dataset.loanId;
-                const status = col.dataset.kanbanColumn;
+                const status = event.to?.dataset?.kanbanColumn;
                 window.Livewire.dispatchTo('loans.loan-kanban', 'updateStatus', { loanId, status });
             },
         });
