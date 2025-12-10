@@ -31,7 +31,7 @@
             document.addEventListener('fullcalendar:ready', initCalendar, { once: true });
         }
     ">
-    <div class="bg-white border border-slate-200 rounded-xl shadow-sm">
+    <div class="panel-apple">
         <div class="p-4 flex items-center justify-between">
             <div>
                 <div class="text-xs uppercase text-slate-500">Calendario de vencimientos</div>
