@@ -24,12 +24,12 @@
 }
 
 .dark {
-    --bg: #0f1218;
-    --card: #121826;
-    --card-border: #1f2937;
-    --text: #e5e7eb;
-    --muted: #9ca3af;
-    --shadow: 0 20px 60px -30px rgba(0, 0, 0, 0.75);
+    --bg: #0a0f14;
+    --card: #0f1725;
+    --card-border: #1c2736;
+    --text: #f1f5fb;
+    --muted: #a5afc2;
+    --shadow: 0 24px 60px -36px rgba(0, 0, 0, 0.7);
 }
 
 body {
@@ -92,6 +92,7 @@ body {
 .dark .card {
     background: var(--card);
     border-color: var(--card-border);
+    box-shadow: 0 28px 60px -36px rgba(0, 0, 0, 0.72);
 }
 
 .panel-apple {
@@ -145,6 +146,34 @@ body {
     background-size: 6px 6px, 6px 6px;
     background-repeat: no-repeat;
     padding-right: 32px;
+}
+
+select,
+input[type="date"] {
+    background-color: var(--card);
+    color: var(--text);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-weight: 600;
+}
+select option {
+    background: var(--card);
+    color: var(--text);
+}
+
+.dark .btn-primary-apple {
+    background: linear-gradient(135deg, #0ea5e9, #0284c7);
+    box-shadow: 0 18px 40px -22px rgba(14, 165, 233, 0.55);
+}
+.dark .btn-outline-apple {
+    border-color: rgba(255, 255, 255, 0.12);
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.04);
+}
+.dark .btn-outline-apple:hover {
+    border-color: #38bdf8;
+    color: #e0f2fe;
 }
 
 .btn-primary-apple {
@@ -212,13 +241,14 @@ body {
 .topbar-apple {
     background: var(--card);
     border-bottom: 1px solid var(--card-border);
-    box-shadow: 0 10px 40px -32px rgba(15, 23, 42, 0.4);
+    box-shadow: 0 10px 40px -32px rgba(15, 23, 42, 0.25);
 }
 
 .sidebar {
     position: sticky;
     top: 0;
     align-self: flex-start;
+    background: var(--bg);
 }
 
 .sidebar-link {
@@ -242,11 +272,11 @@ body {
     color: var(--text);
 }
 .dark .sidebar-link:hover {
-    background: rgba(59, 130, 246, 0.12);
+    background: rgba(59, 130, 246, 0.14);
 }
 .dark .sidebar-link--active {
-    background: rgba(59, 130, 246, 0.18);
-    color: #93c5fd;
+    background: rgba(59, 130, 246, 0.26);
+    color: #e4efff;
 }
 
 .status-badge {
@@ -348,4 +378,20 @@ body {
     --fc-today-bg-color: rgba(77, 171, 247, 0.18);
     --fc-event-bg-color: #38bdf8;
     --fc-event-border-color: transparent;
+}
+.dark .fc .fc-toolbar-title {
+    color: var(--text);
+}
+.user-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.12);
+    color: var(--text);
+    font-weight: 600;
+}
+.dark .user-chip {
+    background: rgba(255, 255, 255, 0.08);
 }

@@ -92,3 +92,19 @@ Si tienes PHP, Composer y Node instalados, desde la raíz del proyecto:
 bash setup.sh
 ```
 Esto crea `.env` si falta, instala dependencias, genera key, migra/seed, crea storage:link, instala npm y compila assets.
+
+### Nota rápida para macOS
+1) Instala dependencias base (Homebrew):
+   ```bash
+   brew install php composer node
+   ```
+2) Clona el proyecto y entra al folder, luego ejecuta:
+   ```bash
+   bash setup.sh
+   php artisan serve
+   ```
+3) Si prefieres Docker Desktop en macOS:
+   ```bash
+   docker-compose up -d --build
+   docker compose exec app bash -lc "cd /var/www/html/moneyLanding && bash setup.sh"
+   ```

@@ -16,6 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.dispatchEvent(new CustomEvent('fullcalendar:ready'));
 });
 
+// Atajo global CMD/CTRL + K para búsqueda
+document.addEventListener('keydown', (event) => {
+    if ((event.metaKey || event.ctrlKey) && (event.key === 'k' || event.key === 'K')) {
+        event.preventDefault();
+        document.dispatchEvent(new CustomEvent('open-search'));
+    }
+});
+
 const setThemeClass = (theme) => {
     if (theme === 'dark') {
         document.documentElement.classList.add('dark');

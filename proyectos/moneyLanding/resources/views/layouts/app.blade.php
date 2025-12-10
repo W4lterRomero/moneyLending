@@ -55,7 +55,7 @@
                         </button>
                         <div class="text-sm text-slate-500">Sistema de Gestión de Préstamos</div>
                     </div>
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2">
                         <button x-data @click="$dispatch('open-search')"
                             class="btn-outline-apple text-sm">
                             Búsqueda (⌘/Ctrl + K)
@@ -65,7 +65,12 @@
                             <x-icon x-show="$store.theme.current === 'dark'" name="sun" class="w-5 h-5" />
                         </button>
                         @auth
-                            <div class="text-sm text-slate-700">{{ auth()->user()->name }}</div>
+                            <div class="user-chip">
+                                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sky-500 text-white text-xs font-bold">
+                                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                </span>
+                                <span>{{ auth()->user()->name }}</span>
+                            </div>
                         @endauth
                     </div>
                 </div>
