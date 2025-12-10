@@ -67,3 +67,21 @@ Stack: Laravel 12 (PHP 8.2), Fortify, Livewire 3, Vite + Blade + Tailwind, MySQL
 - Conectar Scout a motor externo (Meili/Algolia) si se requiere fuzziness.
 - Sumar pruebas Dusk para flujos críticos (auth, creación de préstamo, pago).
 - Automatizar despliegue con Sail/GitHub Actions y publicar assets de Vite.
+
+### Pasos rápidos en WSL (usando Node en contenedor para evitar permisos)
+Si tienes problemas de permisos con npm en Windows/WSL, puedes compilar assets así:
+```bash
+# En la raíz del proyecto
+docker run --rm -v "$(pwd)":/app -w /app node:20 bash -lc "npm install && npm run build"
+```
+
+Luego levanta PHP:
+```bash
+php artisan serve  # o usa docker-compose up -d
+```
+
+### Problemas comunes
+- **Permisos npm en WSL**: usa el comando anterior con `node:20`.
+- **FullCalendar CSS**: se carga vía CDN en `layouts/app.blade.php`; asegúrate de tener red.
+- **Colas/Jobs**: arranca `php artisan queue:listen` si quieres notificaciones de vencimientos.
+- **Búsqueda global**: requiere `php artisan migrate --seed` para datos demo y que el backend esté arriba.

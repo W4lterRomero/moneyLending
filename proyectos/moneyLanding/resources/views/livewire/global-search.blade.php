@@ -16,15 +16,21 @@
             </div>
 
             <div class="max-h-80 overflow-auto divide-y divide-slate-100">
-                @forelse ($results as $result)
-                    <a href="{{ $result['url'] ?? '#' }}" class="block py-3 hover:bg-slate-50">
-                        <div class="text-xs uppercase text-slate-400">{{ $result['type'] }}</div>
-                        <div class="text-sm font-semibold text-slate-800">{{ $result['title'] }}</div>
-                        <div class="text-xs text-slate-500">{{ $result['subtitle'] }}</div>
-                    </a>
-                @empty
-                    <div class="py-3 text-sm text-slate-500">Sin resultados</div>
-                @endforelse
+                @if (strlen(trim($term)) < $minLength)
+                    <div class="py-3 text-sm text-slate-500">Escribe al menos {{ $minLength }} caracteres para buscar.</div>
+                @elseif($isSearching)
+                    <div class="py-3 text-sm text-slate-500">Buscando...</div>
+                @else
+                    @forelse ($results as $result)
+                        <a href="{{ $result['url'] ?? '#' }}" class="block py-3 hover:bg-slate-50">
+                            <div class="text-xs uppercase text-slate-400">{{ $result['type'] }}</div>
+                            <div class="text-sm font-semibold text-slate-800">{{ $result['title'] }}</div>
+                            <div class="text-xs text-slate-500">{{ $result['subtitle'] }}</div>
+                        </a>
+                    @empty
+                        <div class="py-3 text-sm text-slate-500">Sin resultados</div>
+                    @endforelse
+                @endif
             </div>
         </div>
     </div>

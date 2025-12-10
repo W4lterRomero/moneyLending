@@ -9,6 +9,8 @@ class GlobalSearch extends Component
 {
     public string $term = '';
     public array $results = [];
+    public bool $isSearching = false;
+    public int $minLength = 2;
 
     public function render()
     {
@@ -17,6 +19,13 @@ class GlobalSearch extends Component
 
     public function updatedTerm(): void
     {
+        if (strlen(trim($this->term)) < $this->minLength) {
+            $this->results = [];
+            return;
+        }
+
+        $this->isSearching = true;
         $this->results = app(GlobalSearchService::class)->search($this->term)->toArray();
+        $this->isSearching = false;
     }
 }

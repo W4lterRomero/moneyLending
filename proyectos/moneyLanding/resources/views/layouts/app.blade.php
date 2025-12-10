@@ -11,7 +11,7 @@
     @livewireStyles
 </head>
 
-<body class="text-slate-800" x-data="{ mobileNav: false }">
+<body class="text-slate-800 surface-gradient dark:bg-[#0b1220]" x-data="{ mobileNav: false }">
     <div class="min-h-screen flex">
         <aside class="w-72 hidden md:flex flex-col p-4 gap-4">
             <div class="panel-apple p-4">
@@ -73,8 +73,18 @@
 
             <div class="px-4 md:px-6 py-6 space-y-4">
                 @if (session('success'))
-                    <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-lg">
+                    <div class="tag tag-success w-full">
                         {{ session('success') }}
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div class="tag tag-danger w-full">
+                        {{ session('error') }}
+                    </div>
+                @endif
+                @if ($errors->any())
+                    <div class="tag tag-warning w-full">
+                        {{ __('Por favor corrige los errores marcados en el formulario.') }}
                     </div>
                 @endif
                 @yield('content')

@@ -34,8 +34,16 @@
 
 body {
     font-family: var(--font-sans);
-    background: radial-gradient(140% 140% at 15% 10%, #f6f8fb 0%, #eef2f8 35%, #e6edf7 60%, #f9fbff 100%);
+    background: var(--bg);
     color: var(--text);
+}
+
+.surface-gradient {
+    background: radial-gradient(140% 140% at 15% 10%, rgba(246, 248, 251, 0.95) 0%, rgba(238, 242, 248, 0.95) 35%, rgba(230, 237, 247, 0.95) 60%, rgba(249, 251, 255, 0.95) 100%);
+}
+
+.dark {
+    background: #0b1220;
 }
 
 .bg-white {
@@ -83,20 +91,30 @@ body {
 }
 
 .card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(245, 248, 252, 0.9));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(245, 248, 252, 0.95));
     border: 1px solid var(--card-border);
     border-radius: 16px;
     box-shadow: 0 24px 80px -40px rgba(15, 23, 42, 0.35);
     padding: 16px;
     backdrop-filter: blur(12px);
 }
+.dark .card {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.8));
+    border-color: rgba(51, 65, 85, 0.8);
+    box-shadow: 0 24px 80px -40px rgba(0, 0, 0, 0.7);
+}
 
 .panel-apple {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.85), rgba(243, 246, 252, 0.9));
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(243, 246, 252, 0.92));
     border: 1px solid rgba(226, 232, 240, 0.8);
     box-shadow: 0 24px 80px -44px rgba(15, 23, 42, 0.35);
     border-radius: 18px;
     backdrop-filter: blur(14px);
+}
+.dark .panel-apple {
+    background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.82));
+    border: 1px solid rgba(51, 65, 85, 0.8);
+    box-shadow: 0 24px 80px -44px rgba(0, 0, 0, 0.7);
 }
 
 .badge {
@@ -162,6 +180,39 @@ body {
     color: #0f172a;
     box-shadow: 0 10px 30px -18px rgba(59,130,246,0.5);
 }
+.dark .input-apple {
+    background: rgba(15, 23, 42, 0.8);
+    color: var(--text);
+    border-color: rgba(148, 163, 184, 0.35);
+}
+.dark .input-apple:focus {
+    border-color: #4dabf7;
+    box-shadow: 0 0 0 4px rgba(77, 171, 247, 0.15);
+    background: rgba(15, 23, 42, 0.9);
+}
+.dark .btn-outline-apple {
+    background: rgba(15, 23, 42, 0.7);
+    color: var(--text);
+}
+
+/* Alert tags */
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.tag-success { background: #ecfdf3; color: #166534; border: 1px solid #bbf7d0; }
+.tag-warning { background: #fffbeb; color: #92400e; border: 1px solid #fef3c7; }
+.tag-danger { background: #fef2f2; color: #991b1b; border: 1px solid #fecdd3; }
+.tag-info { background: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+.dark .tag-success { background: rgba(22, 101, 52, 0.18); color: #bbf7d0; border-color: rgba(16, 185, 129, 0.45); }
+.dark .tag-warning { background: rgba(146, 64, 14, 0.18); color: #fcd34d; border-color: rgba(234, 179, 8, 0.5); }
+.dark .tag-danger { background: rgba(153, 27, 27, 0.18); color: #fecdd3; border-color: rgba(248, 113, 113, 0.5); }
+.dark .tag-info { background: rgba(7, 89, 133, 0.18); color: #bae6fd; border-color: rgba(125, 211, 252, 0.5); }
 
 /* FullCalendar Apple-like */
 .fc {
@@ -214,4 +265,17 @@ body {
 
 .fc .fc-daygrid-event-dot {
     border-width: 6px;
+}
+
+.dark .fc {
+    --fc-border-color: rgba(51, 65, 85, 0.8);
+    --fc-page-bg-color: transparent;
+    --fc-neutral-bg-color: rgba(15, 23, 42, 0.7);
+    --fc-button-bg-color: #111827;
+    --fc-button-border-color: rgba(255, 255, 255, 0.08);
+    --fc-button-hover-bg-color: #1f2937;
+    --fc-button-active-bg-color: #1f2937;
+    --fc-today-bg-color: rgba(77, 171, 247, 0.18);
+    --fc-event-bg-color: #38bdf8;
+    --fc-event-border-color: transparent;
 }
