@@ -15,9 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.dispatchEvent(new CustomEvent('charts:ready'));
     document.dispatchEvent(new CustomEvent('fullcalendar:ready'));
 });
-document.addEventListener('DOMContentLoaded', () => {
-    document.dispatchEvent(new CustomEvent('charts:ready'));
-});
 
 const setThemeClass = (theme) => {
     if (theme === 'dark') {
@@ -52,7 +49,10 @@ window.initKanbanSortables = () => {
             onEnd: (event) => {
                 const loanId = event.item.dataset.loanId;
                 const status = event.to?.dataset?.kanbanColumn;
-                window.Livewire.dispatchTo('loans.loan-kanban', 'updateStatus', { loanId, status });
+                const componentId = col.closest('[data-kanban-id]')?.dataset?.kanbanId;
+                if (componentId && window.Livewire?.find(componentId)) {
+                    window.Livewire.find(componentId).call('updateStatus', loanId, status);
+                }
             },
         });
     });
@@ -67,5 +67,68 @@ document.addEventListener('livewire:load', () => {
     window.initKanbanSortables();
     Livewire.hook('morph.updated', () => window.initKanbanSortables());
 });
+
+// Charts rendering helper
+let incomeChartInstance = null;
+let statusChartInstance = null;
+window.renderCharts = () => {
+    if (!window.Chart) return;
+
+    const incomeCtx = document.getElementById('incomeChart');
+    if (incomeCtx) {
+        const chartDataset = incomeCtx.dataset.chart ? JSON.parse(incomeCtx.dataset.chart) : null;
+        if (chartDataset) {
+            if (incomeChartInstance) incomeChartInstance.destroy();
+            incomeChartInstance = new window.Chart(incomeCtx, {
+                type: 'line',
+                data: {
+                    labels: chartDataset.labels,
+                    datasets: [
+                        {
+                            label: 'Prestado',
+                            data: chartDataset.lent,
+                            borderColor: '#4dabf7',
+                            backgroundColor: '#4dabf733',
+                            tension: 0.35,
+                        },
+                        {
+                            label: 'Cobrado',
+                            data: chartDataset.collected,
+                            borderColor: '#10b981',
+                            backgroundColor: '#10b98133',
+                            tension: 0.35,
+                        }
+                    ]
+                },
+                options: { plugins: { legend: { display: true } } }
+            });
+        }
+    }
+
+    const statusCtx = document.getElementById('statusChart');
+    if (statusCtx) {
+        const statusData = statusCtx.dataset.status ? JSON.parse(statusCtx.dataset.status) : null;
+        if (statusData) {
+            if (statusChartInstance) statusChartInstance.destroy();
+            const values = Object.values(statusData);
+            statusChartInstance = new window.Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Activos', 'Morosos', 'Completados'],
+                    datasets: [{
+                        data: values,
+                        backgroundColor: ['#4dabf7', '#f59e0b', '#10b981']
+                    }]
+                },
+                options: { plugins: { legend: { position: 'bottom' } } }
+            });
+        }
+    }
+};
+
+document.addEventListener('charts:ready', () => window.renderCharts());
+document.addEventListener('charts-refresh', () => window.renderCharts());
+document.addEventListener('livewire:load', () => window.renderCharts());
+document.addEventListener('livewire:navigated', () => window.renderCharts());
 
 Alpine.start();
