@@ -67,14 +67,18 @@
                 <div class="font-semibold text-slate-800">Ingresos vs tiempo</div>
                 <span class="text-xs text-slate-500">Datos reales</span>
             </div>
-            <canvas id="incomeChart" wire:ignore data-range="{{ $range }}" data-chart='@json($chartData)'></canvas>
+            <div wire:ignore>
+                <canvas id="incomeChart" data-range="{{ $range }}" data-chart='@json($chartData)' key="{{ md5(json_encode($chartData)) }}"></canvas>
+            </div>
         </div>
         <div class="card border border-slate-200/80 shadow-sm">
             <div class="flex items-center justify-between mb-3">
                 <div class="font-semibold text-slate-800">Cartera por estado</div>
                 <span class="text-xs text-slate-500">Live</span>
             </div>
-            <canvas id="statusChart" wire:ignore data-status='@json($statusCounts)'></canvas>
+            <div wire:ignore>
+                <canvas id="statusChart" data-status='@json($statusCounts)' key="{{ md5(json_encode($statusCounts)) }}"></canvas>
+            </div>
         </div>
     </div>
 

@@ -24,12 +24,12 @@
 }
 
 .dark {
-    --bg: #0a0f14;
-    --card: #0f1725;
-    --card-border: #1c2736;
-    --text: #f1f5fb;
-    --muted: #a5afc2;
-    --shadow: 0 24px 60px -36px rgba(0, 0, 0, 0.7);
+    --bg: #0b1220;
+    --card: #111a2e;
+    --card-border: #1f2b3d;
+    --text: #e8edf7;
+    --muted: #9fb1c7;
+    --shadow: 0 24px 80px -40px rgba(0, 0, 0, 0.65);
 }
 
 body {
@@ -212,30 +212,34 @@ select option {
     box-shadow: 0 10px 30px -18px rgba(59,130,246,0.5);
 }
 .dark .input-apple {
-    background: rgba(15, 23, 42, 0.8);
+    background: rgba(17, 24, 39, 0.8);
     color: var(--text);
     border-color: rgba(148, 163, 184, 0.35);
 }
 .dark .input-apple:focus {
     border-color: #4dabf7;
     box-shadow: 0 0 0 4px rgba(77, 171, 247, 0.15);
-    background: rgba(15, 23, 42, 0.9);
+    background: rgba(17, 24, 39, 0.92);
 }
 .dark .btn-outline-apple {
-    background: rgba(15, 23, 42, 0.7);
+    background: rgba(17, 24, 39, 0.7);
     color: var(--text);
 }
 .hamburger-apple {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(148, 163, 184, 0.6);
-    box-shadow: 0 10px 30px -20px rgba(15, 23, 42, 0.35);
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(148, 163, 184, 0.65);
+    box-shadow: 0 12px 32px -18px rgba(15, 23, 42, 0.35);
     color: #0f172a;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 .dark .hamburger-apple {
-    background: rgba(17, 24, 39, 0.9);
-    border-color: rgba(255, 255, 255, 0.08);
-    color: #e5e7eb;
-    box-shadow: 0 10px 30px -20px rgba(0, 0, 0, 0.6);
+    background: rgba(22, 30, 46, 0.95);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #e7ecf4;
+    box-shadow: 0 14px 34px -20px rgba(0, 0, 0, 0.7);
+}
+.hamburger-apple:hover {
+    transform: translateY(-1px);
 }
 
 .topbar-apple {
@@ -248,7 +252,7 @@ select option {
     position: sticky;
     top: 0;
     align-self: flex-start;
-    background: var(--bg);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, transparent 45%) var(--bg);
 }
 
 .sidebar-link {
@@ -265,18 +269,18 @@ select option {
     background: #e5f0ff;
 }
 .sidebar-link--active {
-    background: #dceeff;
+    background: linear-gradient(135deg, #e7f1ff, #d9e8ff);
     color: #0a66c2;
 }
 .dark .sidebar-link {
     color: var(--text);
 }
 .dark .sidebar-link:hover {
-    background: rgba(59, 130, 246, 0.14);
+    background: rgba(59, 130, 246, 0.18);
 }
 .dark .sidebar-link--active {
-    background: rgba(59, 130, 246, 0.26);
-    color: #e4efff;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.35), rgba(37, 99, 235, 0.25));
+    color: #e8f3ff;
 }
 
 .status-badge {

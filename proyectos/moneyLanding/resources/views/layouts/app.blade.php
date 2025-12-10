@@ -76,7 +76,7 @@
                 </div>
             </header>
 
-            <div class="px-4 md:px-6 py-6 space-y-4">
+            <div class="px-4 md:px-6 py-6 space-y-4 max-w-7xl mx-auto">
                 @if (session('success'))
                     <div class="tag tag-success w-full">
                         {{ session('success') }}
@@ -110,22 +110,22 @@
             </div>
             <nav class="space-y-1 text-sm">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->routeIs('dashboard') ? 'bg-slate-100 text-sky-600' : '' }}">
-                    <span>📊</span> Dashboard
+                    <x-icon name="chart-bar" class="w-4 h-4" /> Dashboard
                 </a>
                 <a href="{{ route('clients.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->is('clients*') ? 'bg-slate-100 text-sky-600' : '' }}">
-                    <span>🧑</span> Clientes
+                    <x-icon name="users" class="w-4 h-4" /> Clientes
                 </a>
                 <a href="{{ route('loans.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->is('loans*') ? 'bg-slate-100 text-sky-600' : '' }}">
-                    <span>💳</span> Préstamos
+                    <x-icon name="credit-card" class="w-4 h-4" /> Préstamos
                 </a>
                 <a href="{{ route('payments.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->is('payments*') ? 'bg-slate-100 text-sky-600' : '' }}">
-                    <span>💵</span> Pagos
+                    <x-icon name="banknotes" class="w-4 h-4" /> Pagos
                 </a>
                 <a href="{{ route('reports.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->is('reports*') ? 'bg-slate-100 text-sky-600' : '' }}">
-                    <span>📑</span> Reportes
+                    <x-icon name="document-chart" class="w-4 h-4" /> Reportes
                 </a>
                 <a href="{{ route('settings.business') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->is('settings*') ? 'bg-slate-100 text-sky-600' : '' }}">
-                    <span>⚙️</span> Configuración
+                    <x-icon name="cog" class="w-4 h-4" /> Configuración
                 </a>
             </nav>
         </aside>

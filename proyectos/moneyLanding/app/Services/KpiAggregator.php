@@ -47,27 +47,23 @@ class KpiAggregator
 
     protected function range(?string $range, ?array $custom): array
     {
-        $end = Carbon::today();
-        $start = match ($range) {
-            'today' => Carbon::today(),
-            'week' => Carbon::now()->startOfWeek(),
-            'year' => Carbon::now()->startOfYear(),
-            'custom' => isset($custom['start'], $custom['end'])
-                ? Carbon::parse($custom['start'])
-                : Carbon::now()->startOfMonth(),
-            default => Carbon::now()->startOfMonth(),
-        };
-
-        if ($range === 'custom' && isset($custom['end'])) {
-            $end = Carbon::parse($custom['end']);
-        } elseif ($range === 'week') {
-            $end = Carbon::now()->endOfWeek();
-        } elseif ($range === 'year') {
-            $end = Carbon::now()->endOfYear();
-        } else {
-            $end = Carbon::now()->endOfMonth();
+        // Si hay fechas custom, usarlas primero
+        if (isset($custom['start']) && isset($custom['end'])) {
+            try {
+                $start = Carbon::parse($custom['start'])->startOfDay();
+                $end = Carbon::parse($custom['end'])->endOfDay();
+                return [$start, $end];
+            } catch (\Exception $e) {
+                // Si falla el parsing, usar el rango por defecto
+            }
         }
 
-        return [$start, $end];
+        // Rangos predefinidos
+        return match ($range) {
+            'today' => [Carbon::today()->startOfDay(), Carbon::today()->endOfDay()],
+            'week' => [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()],
+            'year' => [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()],
+            default => [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()],
+        };
     }
 }

@@ -58,11 +58,11 @@ class DashboardWidgets extends Component
         ]);
 
         $this->chartData = $this->buildChartData();
-        $this->statusCounts = $this->statusCounts();
+        $this->statusCounts = $this->getStatusCounts();
         $this->refreshedAt = now()->format('d/m/Y H:i');
 
         // Notifica al front que debe redibujar los charts
-        $this->dispatch('charts-refresh');
+        $this->dispatch('charts-refresh')->self();
     }
 
     protected function buildChartData(): array
@@ -108,19 +108,24 @@ class DashboardWidgets extends Component
         ];
     }
 
-    protected function statusCounts(): array
+    protected function getStatusCounts(): array
     {
         [$start, $end] = $this->dateRange();
-        $statuses = ['active', 'delinquent', 'completed'];
 
-        return collect($statuses)->mapWithKeys(function ($status) use ($start, $end) {
-            return [
-                $status => DB::table('loans')
-                    ->where('status', $status)
-                    ->whereBetween('start_date', [$start, $end])
-                    ->count()
-            ];
-        })->toArray();
+        // Obtener conteos agrupados por status
+        $counts = DB::table('loans')
+            ->selectRaw('status, COUNT(*) as count')
+            ->whereBetween('start_date', [$start, $end])
+            ->groupBy('status')
+            ->pluck('count', 'status')
+            ->toArray();
+
+        // Retornar en orden específico para el gráfico
+        return [
+            'active' => $counts['active'] ?? 0,
+            'delinquent' => $counts['delinquent'] ?? 0,
+            'completed' => $counts['completed'] ?? 0,
+        ];
     }
 
     protected function dateRange(): array

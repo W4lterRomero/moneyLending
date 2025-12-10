@@ -95,25 +95,72 @@ window.renderCharts = () => {
             incomeChartInstance = new window.Chart(incomeCtx, {
                 type: 'line',
                 data: {
-                    labels: chartDataset.labels,
+                    labels: chartDataset.labels || [],
                     datasets: [
                         {
                             label: 'Prestado',
-                            data: chartDataset.lent,
+                            data: chartDataset.lent || [],
                             borderColor: '#4dabf7',
-                            backgroundColor: '#4dabf733',
-                            tension: 0.35,
+                            backgroundColor: 'rgba(77, 171, 247, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 3,
+                            pointHoverRadius: 5,
                         },
                         {
                             label: 'Cobrado',
-                            data: chartDataset.collected,
+                            data: chartDataset.collected || [],
                             borderColor: '#10b981',
-                            backgroundColor: '#10b98133',
-                            tension: 0.35,
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 3,
+                            pointHoverRadius: 5,
                         }
                     ]
                 },
-                options: { plugins: { legend: { display: true } } }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 15,
+                                font: { size: 12 }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: { size: 13 },
+                            bodyFont: { size: 12 },
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': $' + context.parsed.y.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
             });
         }
     }
@@ -128,25 +175,74 @@ window.renderCharts = () => {
         }
         if (statusData) {
             if (statusChartInstance) statusChartInstance.destroy();
-            const values = Object.values(statusData);
+
+            // Extraer valores en el orden correcto
+            const values = [
+                statusData.active || 0,
+                statusData.delinquent || 0,
+                statusData.completed || 0
+            ];
+
+            // Si todos son 0, mostrar mensaje
+            const total = values.reduce((a, b) => a + b, 0);
+            if (total === 0) {
+                values[0] = 1; // Mostrar algo visual
+            }
+
             statusChartInstance = new window.Chart(statusCtx, {
                 type: 'doughnut',
                 data: {
                     labels: ['Activos', 'Morosos', 'Completados'],
                     datasets: [{
                         data: values,
-                        backgroundColor: ['#4dabf7', '#f59e0b', '#10b981']
+                        backgroundColor: ['#4dabf7', '#f59e0b', '#10b981'],
+                        borderWidth: 0
                     }]
                 },
-                options: { plugins: { legend: { position: 'bottom' } } }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 10,
+                                font: { size: 11 }
+                            }
+                        },
+                        tooltip: {
+                            enabled: total > 0
+                        }
+                    }
+                }
             });
         }
     }
 };
 
+// Renderizar charts inicialmente
 document.addEventListener('charts:ready', () => window.renderCharts());
-document.addEventListener('charts-refresh', () => window.renderCharts());
-document.addEventListener('livewire:load', () => window.renderCharts());
-document.addEventListener('livewire:navigated', () => window.renderCharts());
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => window.renderCharts(), 200);
+});
+
+// Livewire hooks
+document.addEventListener('livewire:init', () => {
+    // Escuchar evento de Livewire 3
+    Livewire.on('charts-refresh', () => {
+        setTimeout(() => window.renderCharts(), 200);
+    });
+});
+
+document.addEventListener('livewire:navigated', () => {
+    setTimeout(() => window.renderCharts(), 200);
+});
+
+// Hook para detectar actualizaciones del componente
+Livewire.hook('morph.updated', ({el, component}) => {
+    if (el.querySelector('#incomeChart') || el.querySelector('#statusChart')) {
+        setTimeout(() => window.renderCharts(), 250);
+    }
+});
 
 Alpine.start();
