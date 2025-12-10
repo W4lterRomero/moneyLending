@@ -84,7 +84,12 @@ window.renderCharts = () => {
 
     const incomeCtx = document.getElementById('incomeChart');
     if (incomeCtx) {
-        const chartDataset = incomeCtx.dataset.chart ? JSON.parse(incomeCtx.dataset.chart) : null;
+        let chartDataset = null;
+        try {
+            chartDataset = incomeCtx.dataset.chart ? JSON.parse(incomeCtx.dataset.chart) : null;
+        } catch (e) {
+            console.error('Chart dataset inválido', e);
+        }
         if (chartDataset) {
             if (incomeChartInstance) incomeChartInstance.destroy();
             incomeChartInstance = new window.Chart(incomeCtx, {
@@ -115,7 +120,12 @@ window.renderCharts = () => {
 
     const statusCtx = document.getElementById('statusChart');
     if (statusCtx) {
-        const statusData = statusCtx.dataset.status ? JSON.parse(statusCtx.dataset.status) : null;
+        let statusData = null;
+        try {
+            statusData = statusCtx.dataset.status ? JSON.parse(statusCtx.dataset.status) : null;
+        } catch (e) {
+            console.error('Status dataset inválido', e);
+        }
         if (statusData) {
             if (statusChartInstance) statusChartInstance.destroy();
             const values = Object.values(statusData);

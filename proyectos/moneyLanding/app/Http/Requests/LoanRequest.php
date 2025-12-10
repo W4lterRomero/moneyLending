@@ -3,12 +3,17 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Loan;
 
 class LoanRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        $loan = $this->route('loan');
+        if ($loan instanceof Loan) {
+            return $this->user()?->can('update', $loan) ?? false;
+        }
+        return $this->user()?->can('create', Loan::class) ?? false;
     }
 
     public function rules(): array

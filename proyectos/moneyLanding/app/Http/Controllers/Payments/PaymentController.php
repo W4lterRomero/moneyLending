@@ -36,12 +36,16 @@ class PaymentController extends Controller
 
     public function store(PaymentRequest $request)
     {
-        $payment = Payment::create([
-            ...$request->validated(),
-            'recorded_by' => auth()->id(),
-        ]);
+        $payment = null;
 
-        $this->syncInstallment($payment);
+        \DB::transaction(function () use ($request, &$payment) {
+            $payment = Payment::create([
+                ...$request->validated(),
+                'recorded_by' => auth()->id(),
+            ]);
+
+            $this->syncInstallment($payment);
+        });
 
         return redirect()->route('payments.show', $payment)->with('success', 'Pago registrado');
     }
@@ -64,8 +68,10 @@ class PaymentController extends Controller
 
     public function update(PaymentRequest $request, Payment $payment)
     {
-        $payment->update($request->validated());
-        $this->syncInstallment($payment);
+        \DB::transaction(function () use ($request, $payment) {
+            $payment->update($request->validated());
+            $this->syncInstallment($payment->fresh());
+        });
 
         return redirect()->route('payments.show', $payment)->with('success', 'Pago actualizado');
     }

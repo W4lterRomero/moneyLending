@@ -125,8 +125,13 @@ class DashboardWidgets extends Component
 
     protected function dateRange(): array
     {
-        $start = $this->start ? Carbon::parse($this->start) : null;
-        $end = $this->end ? Carbon::parse($this->end) : null;
+        try {
+            $start = $this->start ? Carbon::parse($this->start) : null;
+            $end = $this->end ? Carbon::parse($this->end) : null;
+        } catch (\Throwable $e) {
+            $start = null;
+            $end = null;
+        }
 
         if (!$start || !$end) {
             [$start, $end] = match ($this->range) {
