@@ -61,10 +61,14 @@ class LoanController extends Controller
         $loan = null;
 
         DB::transaction(function () use (&$loan, $data) {
+            do {
+                $code = 'LN-'.Str::upper(Str::random(6));
+            } while (Loan::where('code', $code)->exists());
+
             $loan = Loan::create([
                 ...$data,
                 'user_id' => auth()->id(),
-                'code' => 'LN-'.Str::upper(Str::random(6)),
+                'code' => $code,
             ]);
 
             $this->buildSchedule($loan);

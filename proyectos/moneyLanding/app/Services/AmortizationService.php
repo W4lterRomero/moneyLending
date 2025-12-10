@@ -14,8 +14,16 @@ class AmortizationService
         string $frequency,
         Carbon $startDate
     ): array {
+        if ($principal <= 0 || $termMonths <= 0) {
+            throw new \InvalidArgumentException('Invalid loan parameters');
+        }
+
         $periodsPerYear = $this->periodsPerYear($frequency);
         $totalPeriods = $termMonths / (12 / $periodsPerYear);
+        if ($totalPeriods <= 0) {
+            throw new \InvalidArgumentException('Invalid total periods');
+        }
+
         $periodRate = ($annualRate / 100) / $periodsPerYear;
 
         $payment = $periodRate === 0
@@ -28,8 +36,13 @@ class AmortizationService
 
         for ($i = 1; $i <= $totalPeriods; $i++) {
             $interest = round($balance * $periodRate, 2);
-            $principalPayment = round($payment - $interest, 2);
-            $balance = round($balance - $principalPayment, 2);
+            if ($i === $totalPeriods) {
+                $principalPayment = $balance;
+                $balance = 0;
+            } else {
+                $principalPayment = round($payment - $interest, 2);
+                $balance = round($balance - $principalPayment, 2);
+            }
 
             $schedule[] = [
                 'number' => $i,

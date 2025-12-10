@@ -79,20 +79,26 @@ class DashboardWidgets extends Component
 
         $labels = $months->map(fn ($m) => $m->format('M Y'));
 
-        $lent = $months->map(function ($month) use ($rangeEnd) {
-            $from = $month->copy()->startOfMonth();
-            $to = $month->copy()->endOfMonth()->min($rangeEnd);
-            return DB::table('loans')
-                ->whereBetween('start_date', [$from->toDateString(), $to->toDateString()])
-                ->sum('principal');
+        $lentGrouped = DB::table('loans')
+            ->selectRaw('DATE_FORMAT(start_date, "%Y-%m") as ym, SUM(principal) as total')
+            ->whereBetween('start_date', [$rangeStart, $rangeEnd])
+            ->groupBy('ym')
+            ->pluck('total', 'ym');
+
+        $collectedGrouped = DB::table('payments')
+            ->selectRaw('DATE_FORMAT(paid_at, "%Y-%m") as ym, SUM(amount) as total')
+            ->whereBetween('paid_at', [$rangeStart, $rangeEnd])
+            ->groupBy('ym')
+            ->pluck('total', 'ym');
+
+        $lent = $months->map(function ($month) use ($lentGrouped) {
+            $key = $month->format('Y-m');
+            return (float) ($lentGrouped[$key] ?? 0);
         });
 
-        $collected = $months->map(function ($month) use ($rangeEnd) {
-            $from = $month->copy()->startOfMonth();
-            $to = $month->copy()->endOfMonth()->min($rangeEnd);
-            return DB::table('payments')
-                ->whereBetween('paid_at', [$from->toDateString(), $to->toDateString()])
-                ->sum('amount');
+        $collected = $months->map(function ($month) use ($collectedGrouped) {
+            $key = $month->format('Y-m');
+            return (float) ($collectedGrouped[$key] ?? 0);
         });
 
         return [

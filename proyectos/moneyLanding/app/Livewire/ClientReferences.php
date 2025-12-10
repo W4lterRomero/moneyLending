@@ -51,6 +51,9 @@ class ClientReferences extends Component
 
         if ($referenceId) {
             $reference = ClientReference::findOrFail($referenceId);
+            if ($reference->client_id !== $this->client->id) {
+                abort(403);
+            }
             $this->referenceId = $reference->id;
             $this->type = $reference->type;
             $this->name = $reference->name;
@@ -71,7 +74,11 @@ class ClientReferences extends Component
         $this->validate();
 
         if ($this->referenceId) {
-            ClientReference::findOrFail($this->referenceId)->update([
+            $reference = ClientReference::findOrFail($this->referenceId);
+            if ($reference->client_id !== $this->client->id) {
+                abort(403);
+            }
+            $reference->update([
                 'type' => $this->type,
                 'name' => $this->name,
                 'phone' => $this->phone,

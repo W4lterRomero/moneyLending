@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Payments;
 
 use App\Enums\InstallmentStatus;
 use App\Http\Controllers\Controller;
+use App\Enums\LoanStatus;
 use App\Http\Requests\PaymentRequest;
 use App\Models\Installment;
 use App\Models\Loan;
@@ -79,16 +80,24 @@ class PaymentController extends Controller
     protected function syncInstallment(Payment $payment): void
     {
         if ($payment->installment) {
-            $payment->installment->update([
-                'paid_at' => $payment->paid_at,
-                'status' => InstallmentStatus::Paid,
-            ]);
+            $installmentAmount = $payment->installment->amount;
+
+            if ($payment->amount >= $installmentAmount) {
+                $payment->installment->update([
+                    'paid_at' => $payment->paid_at,
+                    'status' => InstallmentStatus::Paid,
+                ]);
+            } else {
+                $payment->installment->update([
+                    'status' => method_exists(InstallmentStatus::class, 'PartiallyPaid') ? InstallmentStatus::PartiallyPaid : InstallmentStatus::Pending,
+                ]);
+            }
         }
 
         $nextPending = $payment->loan->installments()->where('status', InstallmentStatus::Pending)->orderBy('number')->first();
         $payment->loan->update([
             'next_due_date' => $nextPending?->due_date,
-            'status' => $nextPending ? $payment->loan->status : 'completed',
+            'status' => $nextPending ? $payment->loan->status : LoanStatus::Completed,
         ]);
     }
 }

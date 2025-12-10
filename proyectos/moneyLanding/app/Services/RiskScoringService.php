@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\InstallmentStatus;
 use App\Models\Loan;
 use Carbon\Carbon;
 
@@ -13,8 +14,8 @@ class RiskScoringService
         $prevLoansCount = $clientLoans->count();
 
         $installments = $loan->installments;
-        $paid = $installments->where('status', 'paid');
-        $overdue = $installments->where('status', 'overdue');
+        $paid = $installments->where('status', InstallmentStatus::Paid);
+        $overdue = $installments->where('status', InstallmentStatus::Overdue);
 
         $onTimeRatio = $installments->count() > 0 ? ($paid->count() / $installments->count()) : 1;
         $avgDelay = $overdue->count() > 0

@@ -24,8 +24,14 @@ class GlobalSearch extends Component
             return;
         }
 
-        $this->isSearching = true;
-        $this->results = app(GlobalSearchService::class)->search($this->term)->toArray();
-        $this->isSearching = false;
+        try {
+            $this->isSearching = true;
+            $this->results = app(GlobalSearchService::class)->search($this->term)->toArray();
+        } catch (\Throwable $e) {
+            $this->results = [];
+            session()->flash('error', 'Error en la búsqueda');
+        } finally {
+            $this->isSearching = false;
+        }
     }
 }

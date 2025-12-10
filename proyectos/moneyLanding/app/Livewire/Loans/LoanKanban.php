@@ -28,6 +28,7 @@ class LoanKanban extends Component
 
         $loans = Loan::with('client')
             ->latest('updated_at')
+            ->limit(200)
             ->get()
             ->groupBy(function ($loan) {
                 return $loan->status instanceof BackedEnum ? $loan->status->value : $loan->status;

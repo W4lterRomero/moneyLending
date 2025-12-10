@@ -17,9 +17,9 @@ class LoanRequest extends FormRequest
 
         return [
             'client_id' => ['required', 'exists:clients,id'],
-            'principal' => ['required', 'numeric', 'min:0'],
-            'interest_rate' => ['required', 'numeric', 'min:0'],
-            'term_months' => ['required', 'integer', 'min:1'],
+            'principal' => ['required', 'numeric', 'min:1', 'max:10000000'],
+            'interest_rate' => ['required', 'numeric', 'min:0', 'max:100'],
+            'term_months' => ['required', 'integer', 'min:1', 'max:360'],
             'frequency' => ['required', 'in:monthly,biweekly,weekly'],
             'start_date' => ['required', 'date'],
             'late_fee_rate' => ['nullable', 'numeric', 'min:0'],

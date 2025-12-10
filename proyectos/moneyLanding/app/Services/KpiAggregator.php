@@ -8,6 +8,7 @@ use App\Models\Installment;
 use App\Models\Loan;
 use App\Models\Payment;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class KpiAggregator
 {
@@ -15,22 +16,33 @@ class KpiAggregator
     {
         [$start, $end] = $this->range($range, $custom);
 
-        $loanQuery = Loan::query()->when($start, fn ($q) => $q->whereBetween('start_date', [$start, $end]));
-        $paymentQuery = Payment::query()->when($start, fn ($q) => $q->whereBetween('paid_at', [$start, $end]));
+        $cacheKey = 'kpi:'
+            . ($range ?? 'custom') . ':'
+            . ($start?->timestamp ?? 'null') . ':'
+            . ($end?->timestamp ?? 'null');
 
-        $totalLent = $loanQuery->sum('principal');
-        $totalCollected = $paymentQuery->sum('amount');
-        $activeLoans = Loan::where('status', LoanStatus::Active)->count();
-        $delinquentInstallments = Installment::where('status', InstallmentStatus::Overdue)->count();
-        $totalInstallments = Installment::count();
+        return Cache::remember($cacheKey, 60, function () use ($start, $end) {
+            $loanQuery = Loan::query()->when($start, fn ($q) => $q->whereBetween('start_date', [$start, $end]));
+            $paymentQuery = Payment::query()->when($start, fn ($q) => $q->whereBetween('paid_at', [$start, $end]));
 
-        return [
-            'total_lent' => $totalLent,
-            'total_collected' => $totalCollected,
-            'active_loans' => $activeLoans,
-            'delinquency_rate' => $totalInstallments > 0 ? round(($delinquentInstallments / $totalInstallments) * 100, 2) : 0,
-            'range' => [$start?->toDateString(), $end?->toDateString()],
-        ];
+            $totalLent = $loanQuery->sum('principal');
+            $totalCollected = $paymentQuery->sum('amount');
+            $activeLoans = Loan::where('status', LoanStatus::Active)
+                ->when($start, fn ($q) => $q->whereBetween('start_date', [$start, $end]))
+                ->count();
+            $delinquentInstallments = Installment::where('status', InstallmentStatus::Overdue)
+                ->when($start, fn ($q) => $q->whereBetween('due_date', [$start, $end]))
+                ->count();
+            $totalInstallments = Installment::when($start, fn ($q) => $q->whereBetween('due_date', [$start, $end]))->count();
+
+            return [
+                'total_lent' => $totalLent,
+                'total_collected' => $totalCollected,
+                'active_loans' => $activeLoans,
+                'delinquency_rate' => $totalInstallments > 0 ? round(($delinquentInstallments / $totalInstallments) * 100, 2) : 0,
+                'range' => [$start?->toDateString(), $end?->toDateString()],
+            ];
+        });
     }
 
     protected function range(?string $range, ?array $custom): array
