@@ -64,12 +64,12 @@
                         <div class="text-sm text-slate-500">Sistema de Gestión de Préstamos</div>
                     </div>
                     <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto sm:justify-end">
-                        <button x-data @click="$dispatch('open-search')" 
-                            class="md:hidden sm:inline-flex text-slate-500 hover:text-sky-600 p-2">
-                            <x-icon name="search" class="w-5 h-5" />
+                        <button x-data @click="window.dispatchEvent(new CustomEvent('open-search'))" 
+                            class="md:hidden inline-flex text-slate-500 hover:text-sky-600 p-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7 7 0 105 5a7 7 0 0011.65 11.65z"/></svg>
                         </button>
-                        <div x-data @click="$dispatch('open-search')" class="hidden sm:flex items-center w-64 px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm text-slate-500 cursor-text transition-colors group gap-2">
-                            <x-icon name="search" class="w-4 h-4 group-hover:text-sky-600 transition-colors" />
+                        <div x-data @click="window.dispatchEvent(new CustomEvent('open-search'))" class="hidden sm:flex items-center w-64 px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm text-slate-500 cursor-pointer transition-colors group gap-2">
+                            <svg class="w-4 h-4 group-hover:text-sky-600 transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7 7 0 105 5a7 7 0 0011.65 11.65z"/></svg>
                             <span>Buscar...</span>
                             <span class="ml-auto text-xs text-slate-400 border border-slate-300 rounded px-1.5 py-0.5">⌘K</span>
                         </div>

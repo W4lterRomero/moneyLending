@@ -1,4 +1,4 @@
-<div class="space-y-6" wire:poll.60s="refreshData">
+<div class="space-y-6">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
             <div class="text-xs uppercase text-slate-500">Resumen General</div>

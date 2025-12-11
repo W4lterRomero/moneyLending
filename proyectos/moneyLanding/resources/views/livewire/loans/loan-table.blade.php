@@ -1,14 +1,9 @@
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-3">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            <div class="flex items-center gap-2 w-full md:w-auto">
-                <div class="relative w-full md:w-64">
-                    <input type="text" wire:model.live.debounce.250ms="search" placeholder="Buscar por código o cliente..."
-                    class="pl-9 px-3 py-2 rounded-lg border border-slate-200 focus:border-sky-400 focus:ring focus:ring-sky-100 text-sm w-full" />
-                    <div class="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4">
-                        <svg wire:loading.remove wire:target="search" class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7 7 0 105 5a7 7 0 0011.65 11.65z"/></svg>
-                        <svg wire:loading wire:target="search" class="w-4 h-4 text-sky-500 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                    </div>
-                </div>
+            <div class="relative w-full md:w-64">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7 7 0 105 5a7 7 0 0011.65 11.65z"/></svg>
+                <input type="text" wire:model.live.debounce.250ms="search" placeholder="Buscar por código o cliente..."
+                    class="w-full pl-10 pr-3 py-2 rounded-lg border border-slate-200 focus:border-sky-400 focus:ring focus:ring-sky-100 text-sm" />
             </div>
         </div>
 
