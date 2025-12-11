@@ -180,15 +180,20 @@
 
         @if($transactions->isEmpty())
             <div class="text-center py-8 text-slate-500 dark:text-slate-400">
-                <div class="text-4xl mb-2">📊</div>
                 <p>Sin movimientos</p>
             </div>
         @else
             <div class="space-y-2">
                 @foreach($transactions as $tx)
-                    <div class="flex items-center gap-3 p-3 rounded-xl {{ $tx->type === 'income' ? 'bg-emerald-50 dark:bg-emerald-900/20' : 'bg-red-50 dark:bg-red-900/20' }}">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 {{ $tx->type === 'income' ? 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400' : 'bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400' }}">
-                            {{ $tx->type === 'income' ? '↑' : '↓' }}
+                    <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-700/30 border-l-4 {{ $tx->type === 'income' ? 'border-emerald-500' : 'border-red-500' }}">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 {{ $tx->type === 'income' ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-red-500/20 text-red-600 dark:text-red-400' }}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                @if($tx->type === 'income')
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12"/>
+                                @else
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 13l-5 5m0 0l-5-5m5 5V6"/>
+                                @endif
+                            </svg>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="font-medium text-slate-800 dark:text-white truncate">{{ $tx->category }}</div>
@@ -199,17 +204,13 @@
                         </div>
                         <div class="text-right shrink-0">
                             <div class="font-bold {{ $tx->type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }}">
-                                <template x-if="!hideBalances">
-                                    <span>{{ $tx->type === 'income' ? '+' : '-' }}${{ number_format($tx->amount, 2) }}</span>
-                                </template>
-                                <template x-if="hideBalances">
-                                    <span class="text-slate-400">****</span>
-                                </template>
+                                <span x-show="!hideBalances">{{ $tx->type === 'income' ? '+' : '-' }}${{ number_format($tx->amount, 2) }}</span>
+                                <span x-show="hideBalances" x-cloak class="text-slate-400">****</span>
                             </div>
                         </div>
                         <button type="button" wire:click="deleteTransaction({{ $tx->id }})" 
                             wire:confirm="¿Eliminar este movimiento?"
-                            class="text-slate-300 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 p-1 shrink-0 transition-colors">
+                            class="text-slate-400 hover:text-red-500 p-1 shrink-0 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                             </svg>
@@ -322,14 +323,19 @@
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Categoría</label>
-                        <input type="text" wire:model="transactionCategory" placeholder="Ej: Comida, Transporte..." list="cat-list"
-                            class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500" />
-                        <datalist id="cat-list">
-                            @foreach($categories[$transactionType] ?? [] as $cat)
-                                <option value="{{ $cat }}">
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="text-sm font-medium text-slate-700 dark:text-slate-300">Categoría</label>
+                            <button type="button" wire:click="openCategoryModal" class="text-xs text-sky-500 hover:text-sky-600">
+                                + Nueva
+                            </button>
+                        </div>
+                        <select wire:model="transactionCategory" 
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                            <option value="">Seleccionar categoría...</option>
+                            @foreach($transactionType === 'income' ? $incomeCategories : $expenseCategories as $cat)
+                                <option value="{{ $cat->name }}">{{ $cat->name }}</option>
                             @endforeach
-                        </datalist>
+                        </select>
                         @error('transactionCategory') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
                     
@@ -351,6 +357,59 @@
                     <button type="button" wire:click="saveTransaction" 
                         class="w-full py-4 text-white rounded-xl font-bold text-lg transition-colors {{ $transactionType === 'income' ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-red-500 hover:bg-red-600' }}">
                         Guardar {{ $transactionType === 'income' ? 'Ingreso' : 'Gasto' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+    
+    {{-- Category Management Modal --}}
+    @if($showCategoryModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0,0,0,0.5);">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-sm p-5" @click.outside="$wire.set('showCategoryModal', false)">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-slate-800 dark:text-white">
+                        Categorías de {{ $transactionType === 'income' ? 'Ingresos' : 'Gastos' }}
+                    </h3>
+                    <button type="button" wire:click="$set('showCategoryModal', false)" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                {{-- Add new category --}}
+                <div class="flex gap-2 mb-4">
+                    <input type="text" wire:model="newCategoryName" placeholder="Nueva categoría..." 
+                        wire:keydown.enter="addCategory"
+                        class="flex-1 px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white">
+                    <button type="button" wire:click="addCategory" 
+                        class="px-4 py-2 text-sm text-white rounded-lg {{ $transactionType === 'income' ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-red-500 hover:bg-red-600' }}">
+                        Agregar
+                    </button>
+                </div>
+                @error('newCategoryName') <div class="text-red-500 text-xs mb-2">{{ $message }}</div> @enderror
+                
+                {{-- List existing categories --}}
+                <div class="max-h-48 overflow-y-auto space-y-1">
+                    @foreach($transactionType === 'income' ? $incomeCategories : $expenseCategories as $cat)
+                        <div class="flex items-center justify-between py-2 px-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg group">
+                            <span class="text-sm text-slate-700 dark:text-slate-300">{{ $cat->name }}</span>
+                            <button type="button" wire:click="deleteCategory({{ $cat->id }})" 
+                                wire:confirm="¿Eliminar la categoría '{{ $cat->name }}'?"
+                                class="text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                        </div>
+                    @endforeach
+                </div>
+                
+                <div class="mt-4 text-center">
+                    <button type="button" wire:click="$set('showCategoryModal', false)" 
+                        class="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400">
+                        Cerrar
                     </button>
                 </div>
             </div>

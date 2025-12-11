@@ -3,6 +3,7 @@
 namespace App\Livewire\Finance;
 
 use App\Models\Account;
+use App\Models\FinanceCategory;
 use App\Models\FinanceTransaction;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -18,15 +19,19 @@ class FinanceDashboard extends Component
 
     // Transaction Modal
     public bool $showTransactionModal = false;
-    public string $transactionType = 'expense'; // 'income' or 'expense'
+    public string $transactionType = 'expense';
     public ?int $transactionAccountId = null;
     public string $transactionAmount = '';
     public string $transactionCategory = '';
     public string $transactionDescription = '';
     public string $transactionDate = '';
+    
+    // Category Modal
+    public bool $showCategoryModal = false;
+    public string $newCategoryName = '';
 
     #[Url]
-    public string $filterType = ''; // '', 'income', 'expense'
+    public string $filterType = '';
 
     public function mount(): void
     {
@@ -71,7 +76,6 @@ class FinanceDashboard extends Component
             $oldInitial = $account->initial_balance;
             $account->update($data);
             
-            // Adjust current_balance if initial changed
             if ($oldInitial != $data['initial_balance']) {
                 $account->current_balance += ($data['initial_balance'] - $oldInitial);
                 $account->save();
@@ -145,6 +149,34 @@ class FinanceDashboard extends Component
         $this->transactionDate = now()->format('Y-m-d');
     }
 
+    // ========== CATEGORY METHODS ==========
+    
+    public function openCategoryModal(): void
+    {
+        $this->newCategoryName = '';
+        $this->showCategoryModal = true;
+    }
+    
+    public function addCategory(): void
+    {
+        $this->validate([
+            'newCategoryName' => 'required|string|max:255',
+        ]);
+        
+        FinanceCategory::firstOrCreate([
+            'name' => trim($this->newCategoryName),
+            'type' => $this->transactionType,
+        ]);
+        
+        $this->newCategoryName = '';
+        $this->showCategoryModal = false;
+    }
+    
+    public function deleteCategory(int $id): void
+    {
+        FinanceCategory::destroy($id);
+    }
+
     // ========== COMPUTED DATA ==========
 
     public function render()
@@ -171,7 +203,9 @@ class FinanceDashboard extends Component
             ->whereDate('transaction_date', today())
             ->sum('amount');
 
-        $categories = FinanceTransaction::commonCategories();
+        // Categories from database
+        $incomeCategories = FinanceCategory::income()->orderBy('name')->get();
+        $expenseCategories = FinanceCategory::expense()->orderBy('name')->get();
 
         return view('livewire.finance.finance-dashboard', [
             'accounts' => $accounts,
@@ -179,7 +213,8 @@ class FinanceDashboard extends Component
             'totalBalance' => $totalBalance,
             'todayIncome' => $todayIncome,
             'todayExpense' => $todayExpense,
-            'categories' => $categories,
+            'incomeCategories' => $incomeCategories,
+            'expenseCategories' => $expenseCategories,
         ]);
     }
 }
