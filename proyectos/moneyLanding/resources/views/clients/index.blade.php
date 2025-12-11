@@ -26,9 +26,13 @@
             @foreach ($clients as $client)
                 <div class="card border border-slate-200 rounded-xl p-3 shadow-sm">
                     <div class="flex items-center gap-3">
-                        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-sky-50 text-sky-700 text-sm font-bold">
-                            {{ strtoupper(substr($client->name, 0, 1)) }}
-                        </span>
+                        @if($client->photo_path)
+                            <img src="{{ Storage::url($client->photo_path) }}" class="w-10 h-10 rounded-full object-cover" alt="{{ $client->name }}">
+                        @else
+                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-sky-50 text-sky-700 text-sm font-bold">
+                                {{ strtoupper(substr($client->name, 0, 1)) }}
+                            </span>
+                        @endif
                         <div class="flex-1">
                             <a href="{{ route('clients.show', $client) }}" class="font-semibold text-slate-800 hover:text-sky-600">{{ $client->name }}</a>
                             <div class="text-xs text-slate-500">{{ $client->email }}</div>
@@ -60,9 +64,13 @@
                         <tr>
                             <td class="py-3 pr-4 font-semibold text-slate-800">
                                 <a href="{{ route('clients.show', $client) }}" class="flex items-center gap-2">
-                                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-sky-50 text-sky-700 text-sm font-bold">
-                                        {{ strtoupper(substr($client->name, 0, 1)) }}
-                                    </span>
+                                    @if($client->photo_path)
+                                        <img src="{{ Storage::url($client->photo_path) }}" class="w-8 h-8 rounded-full object-cover" alt="{{ $client->name }}">
+                                    @else
+                                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-sky-50 text-sky-700 text-sm font-bold">
+                                            {{ strtoupper(substr($client->name, 0, 1)) }}
+                                        </span>
+                                    @endif
                                     <span>{{ $client->name }}</span>
                                 </a>
                             </td>

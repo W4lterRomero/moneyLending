@@ -4,6 +4,10 @@
             <div class="text-xs uppercase text-slate-500">Resumen General</div>
             <h1 class="text-2xl font-semibold text-slate-900">Dashboard</h1>
         </div>
+        <button wire:click="refresh" wire:loading.attr="disabled" class="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:text-sky-600 hover:border-sky-200 transition-colors shadow-sm">
+            <svg wire:loading.class="animate-spin" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            <span>Actualizar</span>
+        </button>
     </div>
 
     {{-- KPIs Principales --}}

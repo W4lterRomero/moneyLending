@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Cache;
 
 class KpiAggregator
 {
-    public function metrics(?string $range = null, ?array $custom = null): array
+    public function metrics(?string $range = null, ?array $custom = null, bool $forceRefresh = false): array
     {
         [$start, $end] = $this->range($range, $custom);
 
@@ -20,6 +20,10 @@ class KpiAggregator
             . ($range ?? 'custom') . ':'
             . ($start?->timestamp ?? 'null') . ':'
             . ($end?->timestamp ?? 'null');
+
+        if ($forceRefresh) {
+            Cache::forget($cacheKey);
+        }
 
         // Caché de 1 hora para Raspberry Pi
         return Cache::remember($cacheKey, 3600, function () use ($start, $end) {

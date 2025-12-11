@@ -27,6 +27,13 @@ class DashboardWidgets extends Component
         return view('livewire.dashboard-widgets');
     }
 
+    public function refresh(): void
+    {
+        cache()->forget('dashboard.metrics');
+        $this->aggregator->metrics('month', null, true);
+        $this->refreshData();
+    }
+
     protected function refreshData(): void
     {
         // Caché agresivo de 1 hora para Raspberry Pi
