@@ -17,14 +17,16 @@ class GlobalSearchService
             ->where(function ($q) use ($like) {
                 $q->where('name', 'like', $like)
                     ->orWhere('email', 'like', $like)
-                    ->orWhere('phone', 'like', $like);
+                    ->orWhere('phone', 'like', $like)
+                    ->orWhere('document_number', 'like', $like)
+                    ->orWhere('company_name', 'like', $like);
             })
             ->limit(5)
             ->get()
             ->map(fn ($c) => [
                 'type' => 'Cliente',
                 'title' => $c->name,
-                'subtitle' => $c->email,
+                'subtitle' => $c->company_name ? "{$c->email} • {$c->company_name}" : $c->email,
                 'url' => route('clients.show', $c),
             ]);
 
@@ -44,17 +46,18 @@ class GlobalSearchService
             ]);
 
         $payments = Payment::query()
-            ->with('loan')
+            ->with(['loan.client'])
             ->where(function ($q) use ($like) {
                 $q->where('reference', 'like', $like)
-                    ->orWhereHas('loan', fn ($lq) => $lq->where('code', 'like', $like));
+                    ->orWhereHas('loan', fn ($lq) => $lq->where('code', 'like', $like))
+                    ->orWhereHas('loan.client', fn ($cq) => $cq->where('name', 'like', $like));
             })
             ->limit(5)
             ->get()
             ->map(fn ($p) => [
                 'type' => 'Pago',
-                'title' => $p->reference ?? $p->id,
-                'subtitle' => $p->loan?->code,
+                'title' => '$' . number_format($p->amount, 2),
+                'subtitle' => ($p->loan?->client?->name ?? 'N/A') . " • " . $p->reference,
                 'url' => route('payments.show', $p),
             ]);
 

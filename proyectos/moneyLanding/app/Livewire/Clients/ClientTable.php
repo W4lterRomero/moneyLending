@@ -26,7 +26,8 @@ class ClientTable extends Component
                     $q->where('name', 'like', "%{$this->search}%")
                       ->orWhere('email', 'like', "%{$this->search}%")
                       ->orWhere('phone', 'like', "%{$this->search}%")
-                      ->orWhere('document_number', 'like', "%{$this->search}%");
+                      ->orWhere('document_number', 'like', "%{$this->search}%")
+                      ->orWhere('company_name', 'like', "%{$this->search}%");
                 });
             })
             ->latest()

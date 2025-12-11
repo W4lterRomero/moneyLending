@@ -21,8 +21,11 @@ class PaymentTable extends Component
     {
         $payments = Payment::with(['loan.client'])
             ->when($this->search, function ($query) {
-                $query->whereHas('loan.client', function ($q) {
-                    $q->where('name', 'like', "%{$this->search}%");
+                $query->where(function ($q) {
+                    $q->where('reference', 'like', "%{$this->search}%")
+                      ->orWhereHas('loan.client', function ($c) {
+                          $c->where('name', 'like', "%{$this->search}%");
+                      });
                 });
             })
             ->latest('paid_at')
