@@ -6,8 +6,8 @@ ARG GID=1000
 
 # Instalar extensiones necesarias
 RUN apt-get update && apt-get install -y \
-    git unzip libpng-dev libonig-dev libxml2-dev libpq-dev zip curl \
-    && docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd \
+    git unzip libpng-dev libonig-dev libxml2-dev libpq-dev libzip-dev zip curl \
+    && docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Instalar Node.js 20 para Vite/Tailwind
@@ -29,7 +29,7 @@ RUN printf "<Directory /var/www/html/moneyLanding/public>\n\
     Options Indexes FollowSymLinks\n\
     AllowOverride All\n\
     Require all granted\n\
-</Directory>\n" > /etc/apache2/conf-available/z-laravel.conf \
+    </Directory>\n" > /etc/apache2/conf-available/z-laravel.conf \
     && a2enconf z-laravel
 
 # Configurar www-data con el mismo UID/GID que el usuario del host

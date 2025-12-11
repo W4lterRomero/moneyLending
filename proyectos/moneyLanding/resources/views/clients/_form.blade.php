@@ -78,9 +78,23 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Ocupación/Profesión</label>
+                @php
+                    $existingOccupations = \App\Models\Client::whereNotNull('occupation')
+                        ->where('occupation', '!=', '')
+                        ->distinct()
+                        ->pluck('occupation')
+                        ->sort();
+                @endphp
                 <input type="text" name="occupation" value="{{ old('occupation', $client->occupation ?? '') }}"
                     placeholder="Ej: Ingeniero, Comerciante, Docente"
+                    list="occupations-list"
+                    autocomplete="off"
                     class="input-apple @error('occupation') border-red-500 @enderror" />
+                <datalist id="occupations-list">
+                    @foreach($existingOccupations as $occ)
+                        <option value="{{ $occ }}">
+                    @endforeach
+                </datalist>
                 @error('occupation') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
             <div>

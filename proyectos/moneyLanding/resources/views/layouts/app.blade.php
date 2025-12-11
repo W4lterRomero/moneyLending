@@ -64,10 +64,15 @@
                         <div class="text-sm text-slate-500">Sistema de Gestión de Préstamos</div>
                     </div>
                     <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto sm:justify-end">
-                        <button x-data @click="$dispatch('open-search')"
-                            class="btn-outline-apple text-sm hidden sm:inline-flex">
-                            Búsqueda (⌘/Ctrl + K)
+                        <button x-data @click="$dispatch('open-search')" 
+                            class="md:hidden sm:inline-flex text-slate-500 hover:text-sky-600 p-2">
+                            <x-icon name="search" class="w-5 h-5" />
                         </button>
+                        <div x-data @click="$dispatch('open-search')" class="hidden sm:flex items-center w-64 px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm text-slate-500 cursor-text transition-colors group gap-2">
+                            <x-icon name="search" class="w-4 h-4 group-hover:text-sky-600 transition-colors" />
+                            <span>Buscar...</span>
+                            <span class="ml-auto text-xs text-slate-400 border border-slate-300 rounded px-1.5 py-0.5">⌘K</span>
+                        </div>
                         <button x-data="{ initialTheme: window.__theme ?? 'light' }" @click="$store.theme.toggle()" aria-label="Cambiar tema" class="btn-outline-apple px-3 py-2 flex items-center gap-2 w-12 sm:w-auto justify-center">
                             <x-icon x-cloak x-bind:class="(($store.theme?.current ?? initialTheme) === 'light') ? 'w-4 h-4 transition block' : 'w-4 h-4 transition hidden'" name="sun" />
                             <x-icon x-cloak x-bind:class="(($store.theme?.current ?? initialTheme) === 'dark') ? 'w-4 h-4 transition block' : 'w-4 h-4 transition hidden'" name="moon" />
@@ -155,6 +160,7 @@
     </div>
 
     <livewire:global-search />
+
     @livewireScripts
     @stack('scripts')
 </body>

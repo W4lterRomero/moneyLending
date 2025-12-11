@@ -32,6 +32,8 @@ class KpiAggregator
 
             $totalLent = $loanQuery->sum('principal');
             $totalCollected = $paymentQuery->sum('amount');
+            $totalInterest = $paymentQuery->sum('interest_amount');
+            
             $activeLoans = Loan::where('status', LoanStatus::Active)
                 ->count();
             $delinquentInstallments = Installment::where('status', InstallmentStatus::Overdue)
@@ -48,7 +50,7 @@ class KpiAggregator
                 ->selectRaw('clients.occupation as name, count(*) as count, sum(loans.principal) as total_amount')
                 ->groupBy('clients.occupation')
                 ->orderByDesc('total_amount')
-                ->limit(5)
+                ->limit(3)
                 ->get();
 
             // Top Empresas (Company Name)
@@ -60,12 +62,13 @@ class KpiAggregator
                 ->selectRaw('clients.company_name as name, count(*) as count, sum(loans.principal) as total_amount')
                 ->groupBy('clients.company_name')
                 ->orderByDesc('total_amount')
-                ->limit(5)
+                ->limit(3)
                 ->get();
 
             return [
                 'total_lent' => $totalLent,
                 'total_collected' => $totalCollected,
+                'total_interest' => $totalInterest,
                 'active_loans' => $activeLoans,
                 'delinquency_rate' => $totalInstallments > 0 ? round(($delinquentInstallments / $totalInstallments) * 100, 2) : 0,
                 'top_occupations' => $topOccupations,

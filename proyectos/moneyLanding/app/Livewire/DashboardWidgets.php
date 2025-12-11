@@ -19,7 +19,12 @@ class DashboardWidgets extends Component
 
     public function mount(): void
     {
-        $this->refreshData();
+        if (request()->has('refresh')) {
+            $this->metrics = $this->aggregator->metrics('all', null, true);
+            $this->refreshedAt = now()->format('d/m/Y H:i:s');
+        } else {
+            $this->refreshData();
+        }
     }
 
     public function render()
@@ -29,15 +34,17 @@ class DashboardWidgets extends Component
 
     public function refresh(): void
     {
+        sleep(1); // Pequeña pausa para feedback visual
         // Forzar actualización en el servicio (limpia la caché interna del servicio)
         $this->metrics = $this->aggregator->metrics('all', null, true);
-        $this->refreshedAt = now()->format('d/m/Y H:i');
+        $this->refreshedAt = now()->format('d/m/Y H:i:s');
+        $this->dispatch('dashboard-refreshed');
     }
 
     protected function refreshData(): void
     {
         // Obtener métricas (usa la caché del servicio si existe)
         $this->metrics = $this->aggregator->metrics('all');
-        $this->refreshedAt = now()->format('d/m/Y H:i');
+        $this->refreshedAt = now()->format('d/m/Y H:i:s');
     }
 }

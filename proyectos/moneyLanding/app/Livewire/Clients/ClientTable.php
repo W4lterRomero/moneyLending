@@ -3,6 +3,7 @@
 namespace App\Livewire\Clients;
 
 use App\Models\Client;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -10,11 +11,25 @@ class ClientTable extends Component
 {
     use WithPagination;
 
+    #[Url]
     public string $search = '';
+    
+    public string $sortField = 'created_at';
+    public string $sortDirection = 'desc';
 
-    public function updatingSearch(): void
+    public function updatedSearch(): void
     {
         $this->resetPage();
+    }
+
+    public function sortBy(string $field): void
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = $field === 'name' ? 'asc' : 'desc';
+        }
     }
 
     public function render()
@@ -30,7 +45,7 @@ class ClientTable extends Component
                       ->orWhere('company_name', 'like', "%{$this->search}%");
                 });
             })
-            ->latest()
+            ->orderBy($this->sortField, $this->sortDirection)
             ->paginate(15);
 
         return view('livewire.clients.client-table', [

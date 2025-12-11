@@ -31,6 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('settings/business', [BusinessSettingController::class, 'edit'])->name('settings.business');
     Route::put('settings/business', [BusinessSettingController::class, 'update'])->name('settings.business.update');
+    Route::get('settings/backup', [BusinessSettingController::class, 'downloadBackup'])->name('settings.backup');
 
     Route::get('/search', SearchController::class)->name('search');
 });

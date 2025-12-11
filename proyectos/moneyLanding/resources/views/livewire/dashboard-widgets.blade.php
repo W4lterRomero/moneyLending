@@ -1,14 +1,13 @@
-<div class="space-y-6">
+<div class="space-y-6" wire:poll.60s="refreshData">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
             <div class="text-xs uppercase text-slate-500">Resumen General</div>
             <h1 class="text-2xl font-semibold text-slate-900">Dashboard</h1>
         </div>
-        <button wire:click="refresh" wire:loading.attr="disabled" class="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:text-sky-600 hover:border-sky-200 transition-colors shadow-sm">
-            <svg wire:loading.class="animate-spin" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-            <span wire:loading.remove>Actualizar</span>
-            <span wire:loading>Actualizando...</span>
-        </button>
+        <a href="{{ route('dashboard', ['refresh' => 1]) }}" class="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:text-sky-600 hover:border-sky-200 transition-colors shadow-sm">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            <span>Actualizar</span>
+        </a>
     </div>
 
     {{-- KPIs Principales --}}
@@ -33,11 +32,14 @@
         </div>
 
         <div class="card border border-slate-200/80 shadow-sm">
-            <div class="flex items-center gap-2 text-xs text-slate-500">
-                <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span>Pendiente de Cobro</span>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 text-xs text-slate-500">
+                    <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                    <span>Total Intereses Ganados</span>
+                </div>
+                <span class="text-[10px] px-2 py-1 rounded-full bg-purple-50 text-purple-700">USD</span>
             </div>
-            <div class="text-2xl font-semibold text-amber-600 mt-2">${{ number_format(($metrics['total_lent'] ?? 0) - ($metrics['total_collected'] ?? 0), 2) }}</div>
+            <div class="text-2xl font-semibold text-purple-600 mt-2">${{ number_format($metrics['total_interest'] ?? 0, 2) }}</div>
         </div>
 
         <div class="card border border-slate-200/80 shadow-sm">

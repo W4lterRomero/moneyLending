@@ -5,12 +5,21 @@
                 <svg wire:loading.remove wire:target="search" class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7 7 0 105 5a7 7 0 0011.65 11.65z"/></svg>
                 <svg wire:loading wire:target="search" class="w-4 h-4 text-sky-500 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
             </div>
-            <input type="text" wire:model.live.debounce.250ms="search" placeholder="Buscar por nombre, empresa, documento..."
+            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Buscar por nombre, empresa, documento..."
                 class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring focus:ring-sky-100 text-sm" />
         </div>
+        <button type="button" wire:click="sortBy('name')" class="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-100 whitespace-nowrap">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+            @if($sortField === 'name')
+                <span>{{ $sortDirection === 'asc' ? 'A-Z' : 'Z-A' }}</span>
+            @else
+                <span>Ordenar A-Z</span>
+            @endif
+        </button>
     </div>
 
-    <div class="grid gap-3 sm:hidden" wire:loading.class="opacity-50" wire:target="search">
+    {{-- Vista Móvil (Cards) --}}
+    <div class="grid gap-3 sm:hidden" wire:loading.class="opacity-50">
         @forelse ($clients as $client)
             <div class="card border border-slate-200 rounded-xl p-3 shadow-sm">
                 <div class="flex items-center gap-3">
@@ -40,11 +49,17 @@
         @endforelse
     </div>
 
-    <div class="overflow-auto hidden sm:block" wire:loading.class="opacity-50" wire:target="search">
+    {{-- Vista Desktop (Tabla) --}}
+    <div class="overflow-auto hidden sm:block" wire:loading.class="opacity-50">
         <table class="min-w-full text-sm">
             <thead>
                 <tr class="text-left text-slate-500">
-                    <th class="py-2 pr-4">Nombre</th>
+                    <th class="py-2 pr-4 cursor-pointer hover:text-sky-600 select-none" wire:click="sortBy('name')">
+                        Nombre
+                        @if($sortField === 'name')
+                            <span class="text-sky-500">{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                        @endif
+                    </th>
                     <th class="py-2 pr-4">Email</th>
                     <th class="py-2 pr-4">Teléfono</th>
                     <th class="py-2 pr-4">Estado</th>

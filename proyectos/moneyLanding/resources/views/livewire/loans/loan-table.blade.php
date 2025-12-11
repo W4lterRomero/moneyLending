@@ -54,7 +54,12 @@
                 <thead>
                     <tr class="text-left text-slate-500">
                         <th class="py-2 pr-4">Cliente</th>
-                        <th class="py-2 pr-4">Monto</th>
+                        <th class="py-2 pr-4 cursor-pointer hover:text-sky-600 select-none" wire:click="sortBy('principal')">
+                            Monto
+                            @if($sortField === 'principal')
+                                <span class="text-sky-500">{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                            @endif
+                        </th>
                         <th class="py-2 pr-4">% Interés</th>
                         <th class="py-2 pr-4">Frecuencia</th>
                         <th class="py-2 pr-4">Ganancia</th>
@@ -103,6 +108,8 @@
         </div>
 
     <div>
-        {{ $loans->links() }}
+        @if($loans instanceof \Illuminate\Pagination\LengthAwarePaginator)
+            {{ $loans->links() }}
+        @endif
     </div>
 </div>

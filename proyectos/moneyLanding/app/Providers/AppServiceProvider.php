@@ -24,9 +24,13 @@ class AppServiceProvider extends ServiceProvider
     {
         $businessName = config('app.name', 'Lending Money');
 
-        if (Schema::hasTable('business_settings')) {
-            $settings = BusinessSetting::first();
-            $businessName = $settings->business_name ?? $businessName;
+        try {
+            if (Schema::hasTable('business_settings')) {
+                $settings = BusinessSetting::first();
+                $businessName = $settings->business_name ?? $businessName;
+            }
+        } catch (\Exception $e) {
+            // Ignorar errores de DB durante setup/instalación
         }
 
         config(['app.name' => $businessName]);

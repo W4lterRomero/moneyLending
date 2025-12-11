@@ -5,6 +5,6 @@
         <livewire:dashboard-widgets />
 
         {{-- Tabla simple de préstamos --}}
-        <livewire:loans.loan-table />
+        <livewire:loans.loan-table :limit="5" />
     </div>
 @endsection

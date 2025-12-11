@@ -19,38 +19,59 @@ class AmortizationService
         }
 
         $periodsPerYear = $this->periodsPerYear($frequency);
-        $totalPeriods = $termMonths / (12 / $periodsPerYear);
+        $totalPeriods = ceil($termMonths / (12 / $periodsPerYear));
+        
         if ($totalPeriods <= 0) {
             throw new \InvalidArgumentException('Invalid total periods');
         }
 
-        $periodRate = ($annualRate / 100) / $periodsPerYear;
+        // Interés Simple (Flat)
+        // Ganancia = Monto * (Tasa / 100)
+        // NOTA: Asumimos que la tasa es "Global" por el periodo del préstamo si el usuario así lo piensa,
+        // o si es anual, se prorratea.
+        // Según requerimiento: "monto * interes% = ganancia". 
+        // Interpretación: Tasa es directa sobre el capital, sin importar el tiempo (tasa plana total)
+        // O si es anual, se ajusta.
+        // Para simplificar al máximo y seguir "monto * interes%": usaremos la tasa como porcentaje total de ganancia.
+        // Si el usuario pone 10%, es 10% de ganancia sobre el capital.
+        
+        $totalInterest = $principal * ($annualRate / 100);
+        $totalAmount = $principal + $totalInterest;
+        $payment = $totalAmount / $totalPeriods;
+        
+        // Distribución equitativa de capital e interés por cuota
+        $principalPerInstallment = $principal / $totalPeriods;
+        $interestPerInstallment = $totalInterest / $totalPeriods;
 
-        $payment = $periodRate === 0
-            ? $principal / $totalPeriods
-            : $principal * ($periodRate * pow(1 + $periodRate, $totalPeriods)) / (pow(1 + $periodRate, $totalPeriods) - 1);
-
-        $balance = $principal;
+        $balance = $totalAmount;
         $schedule = [];
         $currentDate = $startDate->clone();
 
         for ($i = 1; $i <= $totalPeriods; $i++) {
-            $interest = round($balance * $periodRate, 2);
-            if ($i === $totalPeriods) {
-                $principalPayment = $balance;
+            // Ajuste de centavos en la última cuota
+            if ($i == $totalPeriods) {
+                // Lo que falte para cerrar
+                $paymentAmount = $balance;
+                // Recalculamos componentes marginalmente si es necesario, 
+                // pero en flat simple suele ser fijo. Ajustaremos el principal para que cierre a 0.
+                $principalPayment = $principal - ($principalPerInstallment * ($totalPeriods - 1));
+                $interestPayment = $totalInterest - ($interestPerInstallment * ($totalPeriods - 1));
+                $paymentAmount = $principalPayment + $interestPayment;
                 $balance = 0;
             } else {
-                $principalPayment = round($payment - $interest, 2);
-                $balance = round($balance - $principalPayment, 2);
+                $paymentAmount = $payment;
+                $principalPayment = $principalPerInstallment;
+                $interestPayment = $interestPerInstallment;
+                $balance -= $paymentAmount;
             }
 
             $schedule[] = [
                 'number' => $i,
                 'due_date' => $currentDate->copy(),
-                'amount' => round($payment, 2),
-                'principal_amount' => $principalPayment,
-                'interest_amount' => $interest,
-                'balance' => max($balance, 0),
+                'amount' => round($paymentAmount, 2),
+                'principal_amount' => round($principalPayment, 2),
+                'interest_amount' => round($interestPayment, 2),
+                'balance' => max(round($balance, 2), 0),
             ];
 
             $currentDate = $this->incrementDate($currentDate, $frequency);
@@ -58,8 +79,8 @@ class AmortizationService
 
         return [
             'payment' => round($payment, 2),
-            'total_interest' => round(collect($schedule)->sum('interest_amount'), 2),
-            'total_amount' => round($payment * $totalPeriods, 2),
+            'total_interest' => round($totalInterest, 2),
+            'total_amount' => round($totalAmount, 2),
             'schedule' => collect($schedule),
         ];
     }

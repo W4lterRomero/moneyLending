@@ -33,4 +33,14 @@
             </div>
         </form>
     </div>
+
+    <div class="mt-6 bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <h2 class="text-lg font-semibold text-slate-900 mb-2">Copia de Seguridad</h2>
+        <p class="text-sm text-slate-500 mb-4">Descarga una copia completa de tus datos (clientes, préstamos, pagos) en formato JSON.</p>
+        
+        <a href="{{ route('settings.backup') }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg shadow-sm hover:bg-slate-50">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            Descargar Backup
+        </a>
+    </div>
 @endsection
