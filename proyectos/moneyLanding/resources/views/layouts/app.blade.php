@@ -45,10 +45,16 @@
                     <x-icon name="credit-card" class="w-4 h-4" /> Préstamos
                 </a>
                 <a href="{{ route('payments.index') }}" class="sidebar-link {{ request()->is('payments*') ? 'sidebar-link--active' : '' }}">
-                    <x-icon name="banknotes" class="w-4 h-4" /> Pagos
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+                    Pagos
+                </a>
+                <a href="{{ route('finance.index') }}" class="sidebar-link {{ request()->is('finance*') ? 'sidebar-link--active' : '' }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Finanzas
                 </a>
                 <a href="{{ route('settings.business') }}" class="sidebar-link {{ request()->is('settings*') ? 'sidebar-link--active' : '' }}">
-                    <x-icon name="cog" class="w-4 h-4" /> Configuración
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Configuración
                 </a>
             </nav>
             <div class="text-xs text-slate-500 panel-apple p-3 text-center">⌘ / Ctrl + K — búsqueda global</div>
@@ -56,38 +62,50 @@
 
         <main class="flex-1">
             <header class="sticky top-0 z-30 topbar-apple backdrop-blur">
-                <div class="px-4 md:px-6 py-3 sm:h-16 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    <div class="flex items-center gap-2">
-                        <button class="md:hidden px-3 py-2 rounded-lg text-sm hamburger-apple" aria-label="Abrir menú" @click="mobileNav = true">
-                            <x-icon name="menu" class="w-5 h-5" />
+                <div class="px-4 md:px-6 h-14 flex items-center justify-between gap-3">
+                    {{-- Left side: hamburger + title --}}
+                    <div class="flex items-center gap-3">
+                        <button class="md:hidden p-2 rounded-lg hamburger-apple" aria-label="Abrir menú" @click="mobileNav = true">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                            </svg>
                         </button>
-                        <div class="text-sm text-slate-500">Sistema de Gestión de Préstamos</div>
+                        <span class="hidden sm:block text-sm text-slate-500 dark:text-slate-400">Sistema de Gestión de Préstamos</span>
                     </div>
-                    <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto sm:justify-end">
+                    
+                    {{-- Right side: search + theme + user --}}
+                    <div class="flex items-center gap-2">
+                        {{-- Search button (mobile) --}}
                         <button x-data @click="window.dispatchEvent(new CustomEvent('open-search'))" 
-                            class="md:hidden inline-flex text-slate-500 hover:text-sky-600 p-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7 7 0 105 5a7 7 0 0011.65 11.65z"/></svg>
+                            class="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                            aria-label="Buscar">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7 7 0 105 5a7 7 0 0011.65 11.65z"/>
+                            </svg>
                         </button>
-                        <div x-data @click="window.dispatchEvent(new CustomEvent('open-search'))" class="hidden sm:flex items-center w-64 px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm text-slate-500 cursor-pointer transition-colors group gap-2">
-                            <svg class="w-4 h-4 group-hover:text-sky-600 transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7 7 0 105 5a7 7 0 0011.65 11.65z"/></svg>
-                            <span>Buscar...</span>
-                            <span class="ml-auto text-xs text-slate-400 border border-slate-300 rounded px-1.5 py-0.5">⌘K</span>
-                        </div>
-                        <button x-data="{ initialTheme: window.__theme ?? 'light' }" @click="$store.theme.toggle()" aria-label="Cambiar tema" class="btn-outline-apple px-3 py-2 flex items-center gap-2 w-12 sm:w-auto justify-center">
-                            <x-icon x-cloak x-bind:class="(($store.theme?.current ?? initialTheme) === 'light') ? 'w-4 h-4 transition block' : 'w-4 h-4 transition hidden'" name="sun" />
-                            <x-icon x-cloak x-bind:class="(($store.theme?.current ?? initialTheme) === 'dark') ? 'w-4 h-4 transition block' : 'w-4 h-4 transition hidden'" name="moon" />
-                            <span class="sr-only">Cambiar tema</span>
+                        
+                        {{-- Theme toggle --}}
+                        <button x-data="{ initialTheme: window.__theme ?? 'light' }" @click="$store.theme.toggle()" 
+                            aria-label="Cambiar tema" 
+                            class="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                            <svg x-cloak x-show="($store.theme?.current ?? initialTheme) === 'light'" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                            <svg x-cloak x-show="($store.theme?.current ?? initialTheme) === 'dark'" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                            </svg>
                         </button>
+                        
+                        {{-- User dropdown --}}
                         @auth
-                            <div class="relative w-full sm:w-auto" x-data="{ openUser: false }">
-                                <button type="button" @click="openUser = !openUser" class="user-chip w-full sm:w-auto justify-between sm:justify-start gap-2">
-                                    <div class="flex items-center gap-2">
-                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sky-500 text-white text-xs font-bold">
-                                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                                        </span>
-                                        <span class="hidden sm:inline">{{ auth()->user()->name }}</span>
-                                    </div>
-                                    <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <div class="relative" x-data="{ openUser: false }">
+                                <button type="button" @click="openUser = !openUser" 
+                                    class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-sky-500 text-white text-xs font-bold">
+                                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                    </span>
+                                    <span class="hidden sm:inline text-sm text-slate-700 dark:text-slate-300">{{ auth()->user()->name }}</span>
+                                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
                                     </svg>
                                 </button>
@@ -147,13 +165,20 @@
                     <x-icon name="users" class="w-4 h-4" /> Clientes
                 </a>
                 <a href="{{ route('loans.index') }}" @click="mobileNav = false" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->is('loans*') ? 'bg-slate-100 text-sky-600' : '' }}">
-                    <x-icon name="credit-card" class="w-4 h-4" /> Préstamos
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                    Préstamos
                 </a>
                 <a href="{{ route('payments.index') }}" @click="mobileNav = false" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->is('payments*') ? 'bg-slate-100 text-sky-600' : '' }}">
-                    <x-icon name="banknotes" class="w-4 h-4" /> Pagos
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+                    Pagos
+                </a>
+                <a href="{{ route('finance.index') }}" @click="mobileNav = false" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->is('finance*') ? 'bg-slate-100 text-sky-600' : '' }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Finanzas
                 </a>
                 <a href="{{ route('settings.business') }}" @click="mobileNav = false" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->is('settings*') ? 'bg-slate-100 text-sky-600' : '' }}">
-                    <x-icon name="cog" class="w-4 h-4" /> Configuración
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Configuración
                 </a>
             </nav>
         </aside>

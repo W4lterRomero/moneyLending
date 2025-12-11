@@ -21,6 +21,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('loans', LoanController::class);
     Route::resource('payments', PaymentController::class);
 
+    // Finance Module
+    Route::get('finance', fn() => view('finance.index'))->name('finance.index');
     Route::prefix('reports')->name('reports.')->group(function () {
         Route::get('/', [ReportController::class, 'index'])->name('index');
         Route::get('/clients', [ReportController::class, 'exportClients'])->name('clients');
