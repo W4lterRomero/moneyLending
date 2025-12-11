@@ -4,8 +4,8 @@
         Calculadora de préstamo
     </button>
 
-    <div x-show="open" x-cloak class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full p-6 space-y-4">
+    <div x-show="open" x-cloak class="fixed inset-0 bg-black/40 flex items-start md:items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between">
                 <h3 class="text-lg font-semibold text-slate-800">Simulador</h3>
                 <button @click="open = false" class="text-slate-500 hover:text-slate-700">&times;</button>

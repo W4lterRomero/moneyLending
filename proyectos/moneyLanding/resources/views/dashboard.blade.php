@@ -5,7 +5,7 @@
         <livewire:dashboard-widgets />
 
         {{-- Calculadora --}}
-        <div class="flex justify-end">
+        <div class="flex justify-start sm:justify-end">
             <livewire:loans.loan-calculator />
         </div>
 

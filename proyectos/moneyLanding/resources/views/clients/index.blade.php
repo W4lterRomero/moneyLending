@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
         <div>
             <h1 class="text-2xl font-semibold text-slate-900">Clientes</h1>
             <p class="text-sm text-slate-500">Gestión de cartera y datos completos.</p>
         </div>
-        <a href="{{ route('clients.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-sky-500 text-white rounded-lg shadow">
+        <a href="{{ route('clients.create') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-sky-500 text-white rounded-lg shadow w-full sm:w-auto">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
             Nuevo cliente
         </a>
@@ -22,7 +22,29 @@
             <button class="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm">Filtrar</button>
         </form>
 
-        <div class="overflow-auto">
+        <div class="grid gap-3 sm:hidden">
+            @foreach ($clients as $client)
+                <div class="card border border-slate-200 rounded-xl p-3 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-sky-50 text-sky-700 text-sm font-bold">
+                            {{ strtoupper(substr($client->name, 0, 1)) }}
+                        </span>
+                        <div class="flex-1">
+                            <a href="{{ route('clients.show', $client) }}" class="font-semibold text-slate-800 hover:text-sky-600">{{ $client->name }}</a>
+                            <div class="text-xs text-slate-500">{{ $client->email }}</div>
+                            <div class="text-xs text-slate-500">{{ $client->phone }}</div>
+                        </div>
+                        <span class="status-badge {{ $client->status }}">{{ ucfirst($client->status) }}</span>
+                    </div>
+                    <div class="flex items-center gap-3 mt-3 text-sm">
+                        <a href="{{ route('clients.show', $client) }}" class="text-sky-600 hover:underline">Ver</a>
+                        <a href="{{ route('clients.edit', $client) }}" class="text-slate-500 hover:text-slate-700">Editar</a>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <div class="overflow-auto hidden sm:block">
             <table class="min-w-full text-sm">
                 <thead>
                     <tr class="text-left text-slate-500">
@@ -61,6 +83,8 @@
             </table>
         </div>
 
-        {{ $clients->links() }}
+        <div class="px-1">
+            {{ $clients->links() }}
+        </div>
     </div>
 @endsection

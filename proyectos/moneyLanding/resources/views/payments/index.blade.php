@@ -1,16 +1,51 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
         <div>
             <h1 class="text-2xl font-semibold text-slate-900">Pagos</h1>
             <p class="text-sm text-slate-500">Control de cobros y conciliación.</p>
         </div>
-        <a href="{{ route('payments.create') }}" class="px-4 py-2 bg-sky-500 text-white rounded-lg shadow">Registrar pago</a>
+        <a href="{{ route('payments.create') }}" class="px-4 py-2 bg-sky-500 text-white rounded-lg shadow w-full sm:w-auto text-center">Registrar pago</a>
     </div>
 
     <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-4 space-y-4">
-        <div class="overflow-auto">
+        {{-- Mobile cards --}}
+        <div class="grid gap-3 sm:hidden">
+            @foreach ($payments as $payment)
+                @php
+                    $method = $payment->method instanceof \BackedEnum ? $payment->method->value : $payment->method;
+                @endphp
+                <div class="card border border-slate-200 rounded-xl p-3 shadow-sm">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex-1">
+                            <a href="{{ route('payments.show', $payment) }}" class="font-semibold text-slate-800 hover:text-sky-600 block">
+                                ${{ number_format($payment->amount, 2) }}
+                            </a>
+                            <div class="text-xs text-slate-500">{{ $payment->paid_at->format('d/m/Y') }}</div>
+                            <a href="{{ route('loans.show', $payment->loan) }}" class="text-xs text-sky-600 hover:underline">
+                                {{ $payment->loan?->client?->name ?? 'Préstamo' }}
+                            </a>
+                        </div>
+                        <span class="px-2 py-1 rounded-full text-xs font-semibold
+                            @class([
+                                'bg-emerald-50 text-emerald-700' => $method === 'cash' || $method === 'transfer',
+                                'bg-indigo-50 text-indigo-700' => $method === 'card',
+                                'bg-slate-100 text-slate-700' => !in_array($method, ['cash','transfer','card']),
+                            ])">
+                            {{ ucfirst($method) }}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-3 mt-3 text-sm">
+                        <a href="{{ route('payments.show', $payment) }}" class="text-sky-600 hover:underline">Ver</a>
+                        <a href="{{ route('payments.edit', $payment) }}" class="text-slate-500 hover:text-slate-700">Editar</a>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        {{-- Desktop table --}}
+        <div class="overflow-auto hidden sm:block">
             <table class="min-w-full text-sm">
                 <thead>
                     <tr class="text-left text-slate-500">
@@ -57,6 +92,8 @@
                 </tbody>
             </table>
         </div>
-        {{ $payments->links() }}
+        <div class="px-1">
+            {{ $payments->links() }}
+        </div>
     </div>
 @endsection

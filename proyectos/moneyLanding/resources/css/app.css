@@ -15,21 +15,23 @@
 }
 
 :root {
-    --bg: #f5f7fb;
-    --card: #ffffff;
-    --card-border: #e5e7eb;
+    --bg: linear-gradient(180deg, #f8fbff 0%, #eef2f7 40%, #e9eef7 100%);
+    --card: rgba(255, 255, 255, 0.9);
+    --card-border: rgba(226, 232, 240, 0.9);
     --text: #0f172a;
     --muted: #6b7280;
-    --shadow: 0 18px 55px -30px rgba(15, 23, 42, 0.25);
+    --shadow: 0 24px 60px -32px rgba(15, 23, 42, 0.25);
+    --blur: 18px;
 }
 
 .dark {
-    --bg: #0b1220;
-    --card: #111a2e;
-    --card-border: #1f2b3d;
+    --bg: linear-gradient(180deg, #0b1220 0%, #0a1020 50%, #0b1225 100%);
+    --card: rgba(17, 24, 39, 0.75);
+    --card-border: rgba(59, 73, 99, 0.55);
     --text: #e8edf7;
     --muted: #9fb1c7;
-    --shadow: 0 24px 80px -40px rgba(0, 0, 0, 0.65);
+    --shadow: 0 24px 80px -40px rgba(0, 0, 0, 0.7);
+    --blur: 18px;
 }
 
 body {
@@ -93,6 +95,7 @@ body {
     border-radius: 16px;
     box-shadow: var(--shadow);
     padding: 16px;
+    backdrop-filter: blur(var(--blur));
 }
 .dark .card {
     background: var(--card);
@@ -105,6 +108,7 @@ body {
     border: 1px solid var(--card-border);
     box-shadow: var(--shadow);
     border-radius: 18px;
+    backdrop-filter: blur(var(--blur));
 }
 .dark .panel-apple {
     background: var(--card);
@@ -216,6 +220,11 @@ select option {
     color: #0f172a;
     box-shadow: 0 10px 30px -18px rgba(59,130,246,0.5);
 }
+.btn-outline-apple:active,
+.btn-primary-apple:active {
+    transform: translateY(0);
+    box-shadow: 0 12px 30px -18px rgba(59,130,246,0.5);
+}
 .dark .input-apple {
     background: rgba(17, 24, 39, 0.8);
     color: var(--text);
@@ -251,6 +260,7 @@ select option {
     background: var(--card);
     border-bottom: 1px solid var(--card-border);
     box-shadow: 0 10px 40px -32px rgba(15, 23, 42, 0.25);
+    backdrop-filter: blur(var(--blur));
 }
 
 .sidebar {
@@ -258,6 +268,7 @@ select option {
     top: 0;
     align-self: flex-start;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, transparent 45%) var(--bg);
+    backdrop-filter: blur(var(--blur));
 }
 
 .sidebar-link {
@@ -268,10 +279,11 @@ select option {
     border-radius: 12px;
     color: var(--text);
     font-weight: 600;
-    transition: background 0.15s ease, color 0.15s ease;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 .sidebar-link:hover {
     background: #e5f0ff;
+    transform: translateX(2px);
 }
 .sidebar-link--active {
     background: linear-gradient(135deg, #e7f1ff, #d9e8ff);

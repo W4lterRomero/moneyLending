@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-4">
         <div>
             <div class="text-xs uppercase text-slate-500">Préstamo</div>
             <h1 class="text-2xl font-semibold text-slate-900">{{ $loan->client?->name }}</h1>
             <p class="text-sm text-slate-500">Monto: ${{ number_format($loan->principal, 2) }}</p>
         </div>
-        <div class="flex gap-2">
+        <div class="flex flex-wrap gap-2">
             <a href="{{ route('payments.create', ['loan_id' => $loan->id]) }}" class="px-3 py-2 bg-sky-600 text-white rounded-lg text-sm hover:bg-sky-700">Registrar pago</a>
             <a href="{{ route('loans.edit', $loan) }}" class="px-3 py-2 bg-slate-900 text-white rounded-lg text-sm hover:bg-slate-800">Editar</a>
             <form method="POST" action="{{ route('loans.destroy', $loan) }}">
@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    <div class="grid lg:grid-cols-3 gap-4">
+    <div class="grid gap-4 lg:grid-cols-3">
         <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-4 space-y-3">
             <div class="font-semibold text-slate-800 text-lg">Información del Préstamo</div>
             <div class="space-y-2">
@@ -55,7 +55,24 @@
         <div class="lg:col-span-2 bg-white border border-slate-200 rounded-xl shadow-sm p-4 space-y-3">
             <div class="font-semibold text-slate-800 text-lg">Historial de Pagos</div>
             @if($loan->payments->count() > 0)
-                <div class="overflow-auto">
+                <div class="grid gap-3 sm:hidden">
+                    @foreach ($loan->payments as $payment)
+                        @php
+                            $method = $payment->method instanceof \BackedEnum ? $payment->method->value : $payment->method;
+                        @endphp
+                        <div class="card border border-slate-200 rounded-xl p-3 shadow-sm">
+                            <div class="flex items-center justify-between gap-2">
+                                <div>
+                                    <div class="text-sm font-semibold text-slate-900">${{ number_format($payment->amount, 2) }}</div>
+                                    <div class="text-xs text-slate-500">{{ $payment->paid_at->format('d/m/Y H:i') }}</div>
+                                    <div class="text-xs text-slate-500 capitalize">Método: {{ $method }}</div>
+                                </div>
+                                <span class="text-xs text-slate-500">Por {{ $payment->recordedBy?->name }}</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="overflow-auto hidden sm:block">
                     <table class="min-w-full text-sm">
                         <thead>
                             <tr class="text-left text-slate-500 border-b border-slate-200">

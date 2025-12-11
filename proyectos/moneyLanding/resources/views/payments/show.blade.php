@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-4">
         <div>
             <div class="text-xs uppercase text-slate-500">Pago</div>
             <h1 class="text-2xl font-semibold text-slate-900">${{ number_format($payment->amount, 2) }}</h1>
@@ -9,7 +9,7 @@
                 Cliente: {{ $payment->loan?->client?->name ?? 'No asignado' }}
             </p>
         </div>
-        <div class="flex gap-2">
+        <div class="flex flex-wrap gap-2">
             <a href="{{ route('payments.edit', $payment) }}" class="px-3 py-2 bg-slate-900 text-white rounded-lg text-sm">Editar</a>
             <form method="POST" action="{{ route('payments.destroy', $payment) }}">
                 @csrf

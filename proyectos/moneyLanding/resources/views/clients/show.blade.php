@@ -3,7 +3,7 @@
 @section('content')
 <div class="space-y-6" x-data="{ showUploadModal: false }">
     {{-- Header --}}
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div class="flex items-center gap-4">
             @if($client->photo_path)
                 <img src="{{ Storage::url($client->photo_path) }}" alt="{{ $client->name }}" 
@@ -18,8 +18,8 @@
                 <p class="text-sm text-slate-500">Cliente desde {{ $client->created_at->format('d/m/Y') }}</p>
             </div>
         </div>
-        <div class="flex gap-2">
-            <a href="{{ route('clients.edit', $client) }}" class="px-4 py-2 bg-slate-900 text-white rounded-lg">Editar</a>
+        <div class="flex flex-wrap gap-2">
+            <a href="{{ route('clients.edit', $client) }}" class="px-4 py-2 bg-slate-900 text-white rounded-lg text-center">Editar</a>
             <form action="{{ route('clients.destroy', $client) }}" method="POST" onsubmit="return confirm('¿Eliminar cliente?')">
                 @csrf @method('DELETE')
                 <button type="submit" class="px-4 py-2 bg-rose-500 text-white rounded-lg">Eliminar</button>
