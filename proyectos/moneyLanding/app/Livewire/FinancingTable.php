@@ -18,6 +18,9 @@ class FinancingTable extends Component
     
     #[Url]
     public string $statusFilter = 'active';
+    
+    #[Url]
+    public string $viewMode = 'list'; // 'list' or 'gallery'
 
     // Modal state
     public bool $showModal = false;
@@ -54,6 +57,13 @@ class FinancingTable extends Component
     public function updatedStatusFilter(): void
     {
         $this->resetPage();
+    }
+
+    public function updatedProductImage(): void
+    {
+        $this->validateOnly('productImage', [
+            'productImage' => 'nullable|image|max:2048',
+        ]);
     }
 
     public function openModal(?int $id = null): void
@@ -160,12 +170,22 @@ class FinancingTable extends Component
         // Summary stats
         $totalActive = Financing::active()->count();
         $totalOwed = Financing::active()->sum('balance');
+        $totalPaid = Financing::paid()->count();
+        $totalCollected = Financing::sum('product_price') - Financing::sum('balance');
+        $totalValue = Financing::sum('product_price');
+        $avgProgress = Financing::active()->count() > 0 
+            ? (Financing::active()->sum('product_price') - Financing::active()->sum('balance')) / Financing::active()->sum('product_price') * 100 
+            : 0;
 
         return view('livewire.financing-table', [
             'financings' => $financings,
             'clients' => $clients,
             'totalActive' => $totalActive,
             'totalOwed' => $totalOwed,
+            'totalPaid' => $totalPaid,
+            'totalCollected' => $totalCollected,
+            'totalValue' => $totalValue,
+            'avgProgress' => $avgProgress,
         ]);
     }
 }
