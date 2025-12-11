@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 
+/* Configure dark mode to use .dark class selector instead of prefers-color-scheme */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
@@ -15,29 +18,34 @@
 }
 
 :root {
-    --bg: linear-gradient(180deg, #f8fbff 0%, #eef2f7 40%, #e9eef7 100%);
-    --card: rgba(255, 255, 255, 0.9);
-    --card-border: rgba(226, 232, 240, 0.9);
+    color-scheme: light;
+    /* Force light mode by default */
+    --card: #ffffff;
+    --card-border: #e2e8f0;
     --text: #0f172a;
     --muted: #6b7280;
-    --shadow: 0 24px 60px -32px rgba(15, 23, 42, 0.25);
-    --blur: 18px;
 }
 
 .dark {
-    --bg: linear-gradient(180deg, #0b1220 0%, #0a1020 50%, #0b1225 100%);
-    --card: rgba(17, 24, 39, 0.75);
+    color-scheme: dark;
+    --card: rgba(17, 24, 39, 0.85);
     --card-border: rgba(59, 73, 99, 0.55);
     --text: #e8edf7;
     --muted: #9fb1c7;
-    --shadow: 0 24px 80px -40px rgba(0, 0, 0, 0.7);
-    --blur: 18px;
 }
 
+/* Body background - EXPLICIT colors */
 body {
     font-family: var(--font-sans);
-    background: var(--bg);
-    color: var(--text);
+    background: linear-gradient(180deg, #f8fbff 0%, #f1f5f9 50%, #e2e8f0 100%);
+    color: #0f172a;
+}
+
+.dark body,
+body.dark,
+.dark {
+    background: linear-gradient(180deg, #0b1220 0%, #0f172a 50%, #1e293b 100%);
+    color: #e8edf7;
 }
 
 /* Alpine.js x-cloak - ocultar hasta que Alpine cargue */
@@ -45,40 +53,30 @@ body {
     display: none !important;
 }
 
-.dark .bg-slate-50,
-.dark .bg-slate-100,
-.dark .bg-slate-200,
+/* Dark mode overrides ONLY */
 .dark .bg-white {
-    background-color: var(--card) !important;
+    background-color: rgba(30, 41, 59, 0.9) !important;
 }
 
-.border,
-.border-slate-200,
-.border-slate-100 {
-    border-color: var(--card-border) !important;
+.dark .bg-slate-50 {
+    background-color: rgba(51, 65, 85, 0.5) !important;
 }
 
 .dark .border-slate-200,
 .dark .border-slate-100,
 .dark .border-slate-300 {
-    border-color: var(--card-border) !important;
+    border-color: rgba(59, 73, 99, 0.55) !important;
 }
 
-.text-slate-800,
-.text-slate-900,
-.text-slate-700 {
-    color: var(--text) !important;
+.dark .text-slate-800,
+.dark .text-slate-900,
+.dark .text-slate-700 {
+    color: #e8edf7 !important;
 }
 
-.text-slate-500,
-.text-slate-600 {
-    color: var(--muted) !important;
-}
-
-.dark .bg-slate-50 .text-slate-800,
-.dark .bg-slate-100 .text-slate-800,
-.dark .bg-slate-200 .text-slate-800 {
-    color: var(--text) !important;
+.dark .text-slate-500,
+.dark .text-slate-600 {
+    color: #9fb1c7 !important;
 }
 
 .card-shadow {

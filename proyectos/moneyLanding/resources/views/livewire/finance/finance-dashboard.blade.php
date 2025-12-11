@@ -56,14 +56,20 @@
     </div>
 
     {{-- Total Balance Card - Adapts to light/dark mode --}}
-    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm">
-        <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm mb-1">
+    {{-- Total Balance Card - Adapts to light/dark mode --}}
+    <div :class="$store.theme.current === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'" 
+         class="rounded-2xl border p-5 shadow-sm transition-colors duration-200">
+        <div :class="$store.theme.current === 'dark' ? 'text-slate-400' : 'text-slate-500'" 
+             class="flex items-center gap-2 text-sm mb-1 transition-colors duration-200">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
             </svg>
             Balance Total
         </div>
-        <div class="text-3xl sm:text-4xl font-bold tracking-tight {{ $totalBalance >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }}">
+        <div :class="$store.theme.current === 'dark' ? 
+            ({{ $totalBalance >= 0 ? "'text-emerald-400'" : "'text-red-400'" }}) : 
+            ({{ $totalBalance >= 0 ? "'text-emerald-600'" : "'text-red-600'" }})"
+            class="text-3xl sm:text-4xl font-bold tracking-tight transition-colors duration-200">
             <template x-if="!hideBalances">
                 <span>${{ number_format($totalBalance, 2) }}</span>
             </template>
@@ -85,7 +91,7 @@
                 </div>
             </div>
             <div>
-                <div class="text-slate-500 dark:text-slate-400">&nbsp;</div>
+                <div :class="$store.theme.current === 'dark' ? 'text-slate-400' : 'text-slate-500'" class="transition-colors duration-200">&nbsp;</div>
                 <div class="flex items-center gap-1">
                     <span class="text-red-500">↓</span>
                     <template x-if="!hideBalances">
@@ -97,16 +103,17 @@
                 </div>
             </div>
             <div class="ml-auto text-right">
-                <div class="text-slate-500 dark:text-slate-400">Cuentas</div>
-                <div class="text-slate-800 dark:text-white font-medium">{{ $accounts->count() }}</div>
+                <div :class="$store.theme.current === 'dark' ? 'text-slate-400' : 'text-slate-500'" class="transition-colors duration-200">Cuentas</div>
+                <div :class="$store.theme.current === 'dark' ? 'text-white' : 'text-slate-800'" class="font-medium transition-colors duration-200">{{ $accounts->count() }}</div>
             </div>
         </div>
     </div>
 
     {{-- Accounts Section --}}
-    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 shadow-sm">
+    <div :class="$store.theme.current === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'" 
+         class="rounded-xl border p-4 shadow-sm transition-colors duration-200">
         <div class="flex items-center justify-between mb-3">
-            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">Mis Cuentas</h2>
+            <h2 :class="$store.theme.current === 'dark' ? 'text-white' : 'text-slate-800'" class="text-lg font-semibold transition-colors duration-200">Mis Cuentas</h2>
             <button type="button" wire:click="openAccountModal()" 
                 class="px-3 py-1.5 text-sm bg-sky-500 hover:bg-sky-600 text-white rounded-lg flex items-center gap-1 transition-colors">
                 <span>+</span> Nueva
@@ -114,7 +121,7 @@
         </div>
         
         @if($accounts->isEmpty())
-            <div class="text-center py-8 text-slate-500 dark:text-slate-400">
+            <div :class="$store.theme.current === 'dark' ? 'text-slate-400' : 'text-slate-500'" class="text-center py-8 transition-colors duration-200">
                 <div class="text-4xl mb-2">💰</div>
                 <p>No hay cuentas aún</p>
                 <p class="text-sm">Crea tu primera cuenta para empezar</p>
@@ -122,14 +129,18 @@
         @else
             <div class="space-y-2">
                 @foreach($accounts as $account)
-                    <div class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                    <div :class="$store.theme.current === 'dark' ? 'bg-slate-700/50 hover:bg-slate-700' : 'bg-slate-50 hover:bg-slate-100'"
+                         class="flex items-center gap-3 p-3 rounded-xl transition-colors duration-200">
                         <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0 shadow-sm"
                              style="background-color: {{ $account->color }}">
                             {{ strtoupper(substr($account->name, 0, 2)) }}
                         </div>
                         <div class="flex-1 min-w-0">
-                            <div class="font-medium text-slate-800 dark:text-white truncate">{{ $account->name }}</div>
-                            <div class="text-xl font-bold {{ $account->current_balance >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }}">
+                            <div :class="$store.theme.current === 'dark' ? 'text-white' : 'text-slate-800'" class="font-medium truncate transition-colors duration-200">{{ $account->name }}</div>
+                            <div :class="$store.theme.current === 'dark' ? 
+                                ({{ $account->current_balance >= 0 ? "'text-emerald-400'" : "'text-red-400'" }}) : 
+                                ({{ $account->current_balance >= 0 ? "'text-emerald-600'" : "'text-red-600'" }})"
+                                class="text-xl font-bold transition-colors duration-200">
                                 <template x-if="!hideBalances">
                                     <span>${{ number_format($account->current_balance, 2) }}</span>
                                 </template>
@@ -159,33 +170,45 @@
     </div>
 
     {{-- Transactions Section --}}
-    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 shadow-sm">
+    <div :class="$store.theme.current === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'" 
+         class="rounded-xl border p-4 shadow-sm transition-colors duration-200">
         <div class="flex items-center justify-between mb-3">
-            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">Historial</h2>
-            <div class="flex gap-1 bg-slate-100 dark:bg-slate-700 p-1 rounded-lg">
+            <h2 :class="$store.theme.current === 'dark' ? 'text-white' : 'text-slate-800'" class="text-lg font-semibold transition-colors duration-200">Historial</h2>
+            <div :class="$store.theme.current === 'dark' ? 'bg-slate-700' : 'bg-slate-100'" class="flex gap-1 p-1 rounded-lg transition-colors duration-200">
                 <button type="button" wire:click="$set('filterType', '')" 
-                    class="px-3 py-1 text-xs rounded-md transition-colors {{ $filterType === '' ? 'bg-white dark:bg-slate-600 shadow text-slate-800 dark:text-white' : 'text-slate-500 dark:text-slate-400' }}">
+                    :class="$store.theme.current === 'dark' ? 
+                        ({{ $filterType === '' ? "'bg-slate-600 text-white'" : "'text-slate-400'" }}) : 
+                        ({{ $filterType === '' ? "'bg-white text-slate-800 shadow'" : "'text-slate-500'" }})"
+                    class="px-3 py-1 text-xs rounded-md transition-colors">
                     Todo
                 </button>
                 <button type="button" wire:click="$set('filterType', 'income')" 
-                    class="px-3 py-1 text-xs rounded-md transition-colors {{ $filterType === 'income' ? 'bg-emerald-500 text-white shadow' : 'text-slate-500 dark:text-slate-400' }}">
+                    :class="$store.theme.current === 'dark' ? 
+                        ({{ $filterType === 'income' ? "'bg-emerald-500 text-white shadow'" : "'text-slate-400'" }}) : 
+                        ({{ $filterType === 'income' ? "'bg-emerald-500 text-white shadow'" : "'text-slate-500'" }})"
+                    class="px-3 py-1 text-xs rounded-md transition-colors">
                     Ingresos
                 </button>
                 <button type="button" wire:click="$set('filterType', 'expense')" 
-                    class="px-3 py-1 text-xs rounded-md transition-colors {{ $filterType === 'expense' ? 'bg-red-500 text-white shadow' : 'text-slate-500 dark:text-slate-400' }}">
+                    :class="$store.theme.current === 'dark' ? 
+                        ({{ $filterType === 'expense' ? "'bg-red-500 text-white shadow'" : "'text-slate-400'" }}) : 
+                        ({{ $filterType === 'expense' ? "'bg-red-500 text-white shadow'" : "'text-slate-500'" }})"
+                    class="px-3 py-1 text-xs rounded-md transition-colors">
                     Gastos
                 </button>
             </div>
         </div>
 
         @if($transactions->isEmpty())
-            <div class="text-center py-8 text-slate-500 dark:text-slate-400">
+
+            <div :class="$store.theme.current === 'dark' ? 'text-slate-400' : 'text-slate-500'" class="text-center py-8 transition-colors duration-200">
                 <p>Sin movimientos</p>
             </div>
         @else
             <div class="space-y-2">
                 @foreach($transactions as $tx)
-                    <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-700/30 border-l-4 {{ $tx->type === 'income' ? 'border-emerald-500' : 'border-red-500' }}">
+                    <div :class="$store.theme.current === 'dark' ? 'bg-slate-700/30' : 'bg-slate-50'" 
+                         class="flex items-center gap-3 p-3 rounded-xl border-l-4 transition-colors duration-200 {{ $tx->type === 'income' ? 'border-emerald-500' : 'border-red-500' }}">
                         <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 {{ $tx->type === 'income' ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-red-500/20 text-red-600 dark:text-red-400' }}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 @if($tx->type === 'income')
@@ -196,14 +219,17 @@
                             </svg>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <div class="font-medium text-slate-800 dark:text-white truncate">{{ $tx->category }}</div>
-                            <div class="text-xs text-slate-500 dark:text-slate-400">
+                            <div :class="$store.theme.current === 'dark' ? 'text-white' : 'text-slate-800'" class="font-medium truncate transition-colors duration-200">{{ $tx->category }}</div>
+                            <div :class="$store.theme.current === 'dark' ? 'text-slate-400' : 'text-slate-500'" class="text-xs transition-colors duration-200">
                                 {{ $tx->account->name }} • {{ $tx->transaction_date->format('d M Y') }}
                                 @if($tx->description) • {{ $tx->description }} @endif
                             </div>
                         </div>
                         <div class="text-right shrink-0">
-                            <div class="font-bold {{ $tx->type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }}">
+                            <div :class="$store.theme.current === 'dark' ? 
+                                ({{ $tx->type === 'income' ? "'text-emerald-400'" : "'text-red-400'" }}) : 
+                                ({{ $tx->type === 'income' ? "'text-emerald-600'" : "'text-red-600'" }})" 
+                                class="font-bold transition-colors duration-200">
                                 <span x-show="!hideBalances">{{ $tx->type === 'income' ? '+' : '-' }}${{ number_format($tx->amount, 2) }}</span>
                                 <span x-show="hideBalances" x-cloak class="text-slate-400">****</span>
                             </div>
@@ -224,9 +250,10 @@
     {{-- Account Modal --}}
     @if($showAccountModal)
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0,0,0,0.5);">
-            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-6" @click.outside="$wire.set('showAccountModal', false)">
+            <div :class="$store.theme.current === 'dark' ? 'bg-slate-800' : 'bg-white'" 
+                 class="rounded-2xl shadow-2xl w-full max-w-md p-6 transition-colors duration-200" @click.outside="$wire.set('showAccountModal', false)">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-slate-800 dark:text-white">
+                    <h3 :class="$store.theme.current === 'dark' ? 'text-white' : 'text-slate-800'" class="text-lg font-semibold transition-colors duration-200">
                         {{ $editingAccountId ? 'Editar Cuenta' : 'Nueva Cuenta' }}
                     </h3>
                     <button type="button" wire:click="$set('showAccountModal', false)" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1">
@@ -286,7 +313,8 @@
     {{-- Transaction Modal --}}
     @if($showTransactionModal)
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0,0,0,0.5);">
-            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-6" @click.outside="$wire.set('showTransactionModal', false)">
+            <div :class="$store.theme.current === 'dark' ? 'bg-slate-800' : 'bg-white'" 
+                 class="rounded-2xl shadow-2xl w-full max-w-md p-6 transition-colors duration-200" @click.outside="$wire.set('showTransactionModal', false)">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold {{ $transactionType === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }}">
                         {{ $transactionType === 'income' ? '+ Nuevo Ingreso' : '− Nuevo Gasto' }}

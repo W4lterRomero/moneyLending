@@ -8,7 +8,7 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-// Dark mode - Usamos document.addEventListener para esperar a que Livewire/Alpine carguen
+// Dark mode - DEFAULT TO LIGHT if no preference stored
 document.addEventListener('livewire:init', () => {
     const setThemeClass = (theme) => {
         if (theme === 'dark') {
@@ -18,8 +18,9 @@ document.addEventListener('livewire:init', () => {
         }
     };
 
+    // Only use stored theme or default to LIGHT - don't auto-detect system preference
     const storedTheme = localStorage.getItem('theme');
-    const preferredTheme = storedTheme ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const preferredTheme = storedTheme || 'light'; // Default to light, not system preference
     setThemeClass(preferredTheme);
 
     // Registrar store de Alpine (Livewire 3 incluye Alpine automáticamente)

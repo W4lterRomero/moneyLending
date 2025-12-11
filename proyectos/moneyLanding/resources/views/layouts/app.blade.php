@@ -10,10 +10,14 @@
     <script>
         (() => {
             const stored = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const theme = stored ?? (prefersDark ? 'dark' : 'light');
-            document.documentElement.classList.toggle('dark', theme === 'dark');
+            const theme = stored === 'dark' ? 'dark' : 'light';
+            // Always start by removing dark class
+            document.documentElement.classList.remove('dark');
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
             window.__theme = theme;
+            console.log('[Theme] Applied:', theme, 'localStorage:', stored);
         })();
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
