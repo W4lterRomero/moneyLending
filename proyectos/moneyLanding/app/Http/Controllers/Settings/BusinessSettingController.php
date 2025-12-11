@@ -5,6 +5,12 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BusinessSettingRequest;
 use App\Models\BusinessSetting;
+use App\Models\Client;
+use App\Models\Loan;
+use App\Models\Payment;
+use App\Models\FinanceAccount;
+use App\Models\FinanceTransaction;
+use App\Models\Financing;
 
 class BusinessSettingController extends Controller
 {
@@ -26,31 +32,29 @@ class BusinessSettingController extends Controller
 
     public function downloadBackup()
     {
-        // Ejecutar el comando de backup
-        // Asumimos que data:export genera un archivo en storage/app/backups/
-        // Si no, lo forzamos a un path temporal y lo descargamos.
-        
-        $filename = 'backup-' . now()->format('Y-m-d-His') . '.json';
-        $path = storage_path('app/' . $filename);
-        
-        // Ejecutar el comando para que escriba en ese path (si el comando lo soporta)
-        // O si el comando escribe a stdout, capturamos el output.
-        // Revisando el context anterior: "php artisan data:export (backup JSON)"
-        // Si el comando no acepta argumentos de archivo, asumiremos que imprime a stdout.
-        
-        \Illuminate\Support\Facades\Artisan::call('data:export');
-        $output = \Illuminate\Support\Facades\Artisan::output();
-        
-        // Si el output es el JSON directo, lo guardamos y descargamos
-        if (json_decode($output)) {
-             return response()->streamDownload(function () use ($output) {
-                echo $output;
-            }, $filename);
+        try {
+            $data = [
+                'exported_at' => now()->toIso8601String(),
+                'app_name' => config('app.name'),
+                'clients' => Client::with(['loans.payments', 'documents'])->get()->toArray(),
+                'loans' => Loan::with('payments')->get()->toArray(),
+                'payments' => Payment::all()->toArray(),
+                'finance_accounts' => class_exists(FinanceAccount::class) ? FinanceAccount::all()->toArray() : [],
+                'finance_transactions' => class_exists(FinanceTransaction::class) ? FinanceTransaction::all()->toArray() : [],
+                'financings' => class_exists(Financing::class) ? Financing::all()->toArray() : [],
+                'settings' => BusinessSetting::first()?->toArray() ?? [],
+            ];
+
+            $filename = 'backup-' . now()->format('Y-m-d-His') . '.json';
+            $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+
+            return response()->streamDownload(function () use ($json) {
+                echo $json;
+            }, $filename, [
+                'Content-Type' => 'application/json',
+            ]);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al generar backup: ' . $e->getMessage());
         }
-        
-        // Fallback genérico si el comando guarda en otro lado, 
-        // pero por ahora probamos capturando output que es lo standard en estos scripts simples.
-        
-        return back()->with('error', 'No se pudo generar el backup');
     }
 }
