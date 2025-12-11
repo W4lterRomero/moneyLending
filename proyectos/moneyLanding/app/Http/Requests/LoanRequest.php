@@ -25,7 +25,7 @@ class LoanRequest extends FormRequest
             'principal' => ['required', 'numeric', 'min:1', 'max:10000000'],
             'interest_rate' => ['required', 'numeric', 'min:0', 'max:100'],
             'term_months' => ['required', 'integer', 'min:1', 'max:360'],
-            'frequency' => ['required', 'in:monthly,biweekly,weekly'],
+            'frequency' => ['required', 'in:daily,weekly,biweekly,monthly'],
             'start_date' => ['required', 'date'],
             'late_fee_rate' => ['nullable', 'numeric', 'min:0'],
             'penalty_rate' => ['nullable', 'numeric', 'min:0'],

@@ -10,6 +10,9 @@ use App\Models\Installment;
 use App\Models\Loan;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class PaymentController extends Controller
 {
@@ -20,8 +23,8 @@ class PaymentController extends Controller
 
     public function index()
     {
-        $payments = Payment::with(['loan', 'installment'])->latest()->paginate(20);
-        $loans = Loan::orderBy('code')->get();
+        $payments = Payment::with(['loan.client', 'installment'])->latest()->paginate(20);
+        $loans = $this->loanOptions();
 
         return view('payments.index', compact('payments', 'loans'));
     }
@@ -29,7 +32,7 @@ class PaymentController extends Controller
     public function create()
     {
         return view('payments.create', [
-            'loans' => Loan::orderBy('code')->get(),
+            'loans' => $this->loanOptions(),
             'installments' => collect(),
         ]);
     }
@@ -39,10 +42,15 @@ class PaymentController extends Controller
         $payment = null;
 
         \DB::transaction(function () use ($request, &$payment) {
+            $data = collect($request->validated())->except(['photo', 'receipt'])->toArray();
+
             $payment = Payment::create([
-                ...$request->validated(),
+                ...$data,
                 'recorded_by' => auth()->id(),
             ]);
+
+            $this->storeFile($payment, $request, 'photo', 'photo_path');
+            $this->storeFile($payment, $request, 'receipt', 'receipt_path');
 
             $this->syncInstallment($payment);
         });
@@ -61,7 +69,7 @@ class PaymentController extends Controller
     {
         return view('payments.edit', [
             'payment' => $payment,
-            'loans' => Loan::orderBy('code')->get(),
+            'loans' => $this->loanOptions(),
             'installments' => Installment::where('loan_id', $payment->loan_id)->get(),
         ]);
     }
@@ -69,7 +77,11 @@ class PaymentController extends Controller
     public function update(PaymentRequest $request, Payment $payment)
     {
         \DB::transaction(function () use ($request, $payment) {
-            $payment->update($request->validated());
+            $payment->update(collect($request->validated())->except(['photo', 'receipt'])->toArray());
+
+            $this->storeFile($payment, $request, 'photo', 'photo_path');
+            $this->storeFile($payment, $request, 'receipt', 'receipt_path');
+
             $this->syncInstallment($payment->fresh());
         });
 
@@ -105,5 +117,31 @@ class PaymentController extends Controller
             'next_due_date' => $nextPending?->due_date,
             'status' => $nextPending ? $payment->loan->status : LoanStatus::Completed,
         ]);
+    }
+
+    protected function loanOptions(): Collection
+    {
+        return Loan::with('client')
+            ->get()
+            ->sortBy(fn ($loan) => strtolower($loan->client?->name ?? ''));
+    }
+
+    protected function storeFile(Payment $payment, Request $request, string $input, string $column): void
+    {
+        if (!$request->hasFile($input)) {
+            return;
+        }
+
+        // Evitar fallos si la migración aún no se ha ejecutado
+        if (!Schema::hasColumn('payments', $column)) {
+            return;
+        }
+
+        if ($payment->{$column}) {
+            Storage::disk('public')->delete($payment->{$column});
+        }
+
+        $path = $request->file($input)->store("payments/{$payment->id}", 'public');
+        $payment->update([$column => $path]);
     }
 }

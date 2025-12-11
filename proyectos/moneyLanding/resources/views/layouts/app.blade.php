@@ -4,8 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name', 'Lending Money') }}</title>
+    @php($appTitle = $appName ?? config('app.name', 'Lending Money'))
+    <title>{{ $appTitle }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>
+        (() => {
+            const stored = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = stored ?? (prefersDark ? 'dark' : 'light');
+            document.documentElement.classList.toggle('dark', theme === 'dark');
+            window.__theme = theme;
+        })();
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
@@ -20,7 +30,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </span>
-                    <span>Lending Money</span>
+                    <span>{{ $appTitle }}</span>
                 </div>
                 <div class="text-xs text-slate-500 mt-1">Gestión de préstamos</div>
             </div>
@@ -58,9 +68,9 @@
                             class="btn-outline-apple text-sm">
                             Búsqueda (⌘/Ctrl + K)
                         </button>
-                        <button @click="$store.theme.toggle()" aria-label="Cambiar tema" class="btn-outline-apple px-3 py-2 flex items-center gap-2">
-                            <x-icon x-show="$store.theme.current === 'light'" name="moon" class="w-4 h-4" />
-                            <x-icon x-show="$store.theme.current === 'dark'" name="sun" class="w-4 h-4" />
+                        <button x-data="{ initialTheme: window.__theme ?? 'light' }" @click="$store.theme.toggle()" aria-label="Cambiar tema" class="btn-outline-apple px-3 py-2 flex items-center gap-2">
+                            <x-icon x-cloak x-show="($store.theme?.current ?? initialTheme) === 'light'" name="sun" class="w-4 h-4 transition" />
+                            <x-icon x-cloak x-show="($store.theme?.current ?? initialTheme) === 'dark'" name="moon" class="w-4 h-4 transition" />
                             <span class="text-xs">Tema</span>
                         </button>
                         @auth

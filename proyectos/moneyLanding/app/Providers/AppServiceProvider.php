@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\BusinessSetting;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,10 +22,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Compartir nombre del negocio con todas las vistas
-        view()->composer('*', function ($view) {
-            $settings = \App\Models\BusinessSetting::first();
-            config(['app.name' => $settings->business_name ?? 'Lending Money']);
-        });
+        $businessName = config('app.name', 'Lending Money');
+
+        if (Schema::hasTable('business_settings')) {
+            $settings = BusinessSetting::first();
+            $businessName = $settings->business_name ?? $businessName;
+        }
+
+        config(['app.name' => $businessName]);
+        View::share('appName', $businessName);
     }
 }

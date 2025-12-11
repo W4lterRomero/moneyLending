@@ -7,7 +7,7 @@
     </div>
 
     <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
-        <form method="POST" action="{{ route('payments.update', $payment) }}" class="space-y-4">
+        <form method="POST" action="{{ route('payments.update', $payment) }}" class="space-y-4" enctype="multipart/form-data">
             @method('PUT')
             @include('payments._form')
             <button class="px-4 py-2 bg-sky-500 text-white rounded-lg shadow">Actualizar</button>

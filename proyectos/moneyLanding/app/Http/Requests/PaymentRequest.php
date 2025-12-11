@@ -22,6 +22,8 @@ class PaymentRequest extends FormRequest
             'principal_amount' => ['nullable', 'numeric', 'min:0'],
             'method' => ['required', 'in:cash,transfer,card,deposit'],
             'reference' => ['nullable', 'string', 'max:255'],
+            'photo' => ['nullable', 'image', 'max:5120'],
+            'receipt' => ['nullable', 'file', 'max:5120', 'mimes:jpg,jpeg,png,pdf'],
             'notes' => ['nullable', 'string'],
         ];
     }

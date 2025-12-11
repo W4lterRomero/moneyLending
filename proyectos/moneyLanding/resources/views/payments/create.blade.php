@@ -7,7 +7,7 @@
     </div>
 
     <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
-        <form method="POST" action="{{ route('payments.store') }}" class="space-y-4">
+        <form method="POST" action="{{ route('payments.store') }}" class="space-y-4" enctype="multipart/form-data">
             @include('payments._form', ['payment' => null])
             <button class="px-4 py-2 bg-sky-500 text-white rounded-lg shadow">Guardar</button>
         </form>

@@ -20,7 +20,7 @@ const setThemeClass = (theme) => {
     }
 };
 
-const storedTheme = localStorage.getItem('theme');
+const storedTheme = window.__theme ?? localStorage.getItem('theme');
 const preferredTheme = storedTheme ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 setThemeClass(preferredTheme);
 

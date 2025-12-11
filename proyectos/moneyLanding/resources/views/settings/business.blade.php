@@ -29,11 +29,6 @@
             <div class="flex justify-end">
                 <button class="px-4 py-2 bg-slate-900 text-white rounded-lg shadow hover:bg-slate-800">Guardar cambios</button>
             </div>
-
-            {{-- Campos ocultos para compatibilidad --}}
-            <input type="hidden" name="timezone" value="{{ old('timezone', $settings->timezone ?? 'UTC') }}" />
-            <input type="hidden" name="default_interest_rate" value="{{ old('default_interest_rate', $settings->default_interest_rate ?? 12) }}" />
-            <input type="hidden" name="default_penalty_rate" value="0" />
         </form>
     </div>
 @endsection

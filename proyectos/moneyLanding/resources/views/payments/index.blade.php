@@ -30,7 +30,8 @@
                             <td class="py-3 pr-4">
                                 <a href="{{ route('loans.show', $payment->loan) }}" class="inline-flex items-center gap-2 text-sky-600">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M3 10h18M5 14h14M7 18h10"/></svg>
-                                    {{ $payment->loan?->code }}
+                                    <span class="font-medium">{{ $payment->loan?->client?->name ?? 'Préstamo' }}</span>
+                                    <span class="text-slate-500">${{ number_format($payment->loan?->principal ?? 0, 2) }}</span>
                                 </a>
                             </td>
                             <td class="py-3 pr-4">{{ $payment->paid_at->format('d/m/Y') }}</td>

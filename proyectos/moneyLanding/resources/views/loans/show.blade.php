@@ -27,6 +27,10 @@
                     <span class="text-sm font-semibold text-slate-900">${{ number_format($loan->principal, 2) }}</span>
                 </div>
                 <div class="flex justify-between items-center py-2 border-b border-slate-100">
+                    <span class="text-sm text-slate-500">Tasa de interés</span>
+                    <span class="text-sm font-semibold text-slate-900">{{ number_format($loan->interest_rate, 2) }}%</span>
+                </div>
+                <div class="flex justify-between items-center py-2 border-b border-slate-100">
                     <span class="text-sm text-slate-500">Frecuencia de pago</span>
                     <span class="text-sm font-semibold text-slate-900">
                         @php

@@ -15,13 +15,7 @@ class BusinessSettingRequest extends FormRequest
     {
         return [
             'business_name' => ['required', 'string', 'max:255'],
-            'legal_id' => ['nullable', 'string', 'max:255'],
             'currency' => ['required', 'string', 'max:10'],
-            'timezone' => ['required', 'string', 'max:50'],
-            'default_interest_rate' => ['required', 'numeric', 'min:0'],
-            'default_penalty_rate' => ['nullable', 'numeric', 'min:0'],
-            'contract_templates' => ['nullable', 'string'], // Acepta JSON string
-            'notification_channels' => ['nullable', 'array'],
         ];
     }
 }

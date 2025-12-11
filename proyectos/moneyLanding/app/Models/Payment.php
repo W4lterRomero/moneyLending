@@ -22,6 +22,8 @@ class Payment extends Model
         'principal_amount',
         'method',
         'reference',
+        'photo_path',
+        'receipt_path',
         'notes',
     ];
 
