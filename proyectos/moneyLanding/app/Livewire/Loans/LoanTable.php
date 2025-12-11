@@ -14,7 +14,7 @@ class LoanTable extends Component
     public string $search = '';
     public string $status = 'all';
     public string $range = 'month';
-    public array $columns = ['code', 'client', 'principal', 'interest_rate', 'status', 'next_due_date'];
+    public array $columns = ['client', 'principal', 'term_months', 'frequency'];
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -44,8 +44,7 @@ class LoanTable extends Component
     {
         $loans = Loan::with('client')
             ->when($this->search, function (Builder $query) {
-                $query->where('code', 'like', "%{$this->search}%")
-                    ->orWhereHas('client', fn ($c) => $c->where('name', 'like', "%{$this->search}%"));
+                $query->whereHas('client', fn ($c) => $c->where('name', 'like', "%{$this->search}%"));
             })
             ->when($this->status !== 'all', fn ($q) => $q->where('status', $this->status))
             ->orderByDesc('created_at')

@@ -38,6 +38,11 @@ body {
     color: var(--text);
 }
 
+/* Alpine.js x-cloak - ocultar hasta que Alpine cargue */
+[x-cloak] {
+    display: none !important;
+}
+
 .bg-white {
     background-color: var(--card) !important;
 }
@@ -318,74 +323,6 @@ select option {
 .dark .tag-danger { background: rgba(153, 27, 27, 0.18); color: #fecdd3; border-color: rgba(248, 113, 113, 0.5); }
 .dark .tag-info { background: rgba(7, 89, 133, 0.18); color: #bae6fd; border-color: rgba(125, 211, 252, 0.5); }
 
-/* FullCalendar Apple-like */
-.fc {
-    --fc-border-color: rgba(226, 232, 240, 0.8);
-    --fc-page-bg-color: transparent;
-    --fc-neutral-bg-color: rgba(248, 250, 252, 0.7);
-    --fc-button-bg-color: #0f172a;
-    --fc-button-border-color: rgba(15, 23, 42, 0.08);
-    --fc-button-hover-bg-color: #111827;
-    --fc-button-active-bg-color: #111827;
-    --fc-today-bg-color: rgba(77, 171, 247, 0.12);
-    --fc-event-bg-color: #4dabf7;
-    --fc-event-border-color: transparent;
-}
-
-.fc .fc-toolbar {
-    margin: 12px 16px;
-    gap: 10px;
-}
-
-.fc .fc-toolbar-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #0f172a;
-}
-
-.fc .fc-button {
-    border-radius: 12px;
-    border: 1px solid rgba(15, 23, 42, 0.1);
-    box-shadow: 0 10px 30px -20px rgba(15, 23, 42, 0.35);
-    padding: 6px 12px;
-    text-transform: none;
-    font-weight: 600;
-}
-
-.fc .fc-daygrid-day {
-    transition: background 0.15s ease;
-}
-
-.fc .fc-daygrid-day:hover {
-    background: rgba(77, 171, 247, 0.04);
-}
-
-.fc .fc-event {
-    border-radius: 12px;
-    padding: 6px 8px;
-    font-weight: 600;
-    box-shadow: 0 10px 25px -15px rgba(77, 171, 247, 0.6);
-}
-
-.fc .fc-daygrid-event-dot {
-    border-width: 6px;
-}
-
-.dark .fc {
-    --fc-border-color: rgba(51, 65, 85, 0.8);
-    --fc-page-bg-color: transparent;
-    --fc-neutral-bg-color: rgba(15, 23, 42, 0.7);
-    --fc-button-bg-color: #111827;
-    --fc-button-border-color: rgba(255, 255, 255, 0.08);
-    --fc-button-hover-bg-color: #1f2937;
-    --fc-button-active-bg-color: #1f2937;
-    --fc-today-bg-color: rgba(77, 171, 247, 0.18);
-    --fc-event-bg-color: #38bdf8;
-    --fc-event-border-color: transparent;
-}
-.dark .fc .fc-toolbar-title {
-    color: var(--text);
-}
 .user-chip {
     display: inline-flex;
     align-items: center;

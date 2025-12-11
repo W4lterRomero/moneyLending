@@ -67,6 +67,7 @@ class AmortizationService
     protected function periodsPerYear(string $frequency): int
     {
         return match ($frequency) {
+            'daily' => 365,
             'weekly' => 52,
             'biweekly' => 26,
             default => 12,
@@ -76,6 +77,7 @@ class AmortizationService
     protected function incrementDate(Carbon $date, string $frequency): Carbon
     {
         return match ($frequency) {
+            'daily' => $date->addDay(),
             'weekly' => $date->addWeek(),
             'biweekly' => $date->addWeeks(2),
             default => $date->addMonth(),

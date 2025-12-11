@@ -21,7 +21,8 @@ class KpiAggregator
             . ($start?->timestamp ?? 'null') . ':'
             . ($end?->timestamp ?? 'null');
 
-        return Cache::remember($cacheKey, 60, function () use ($start, $end) {
+        // Caché de 1 hora para Raspberry Pi
+        return Cache::remember($cacheKey, 3600, function () use ($start, $end) {
             $loanQuery = Loan::query()->when($start, fn ($q) => $q->whereBetween('start_date', [$start, $end]));
             $paymentQuery = Payment::query()->when($start, fn ($q) => $q->whereBetween('paid_at', [$start, $end]));
 

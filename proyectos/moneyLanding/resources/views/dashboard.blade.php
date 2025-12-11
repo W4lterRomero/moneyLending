@@ -3,8 +3,13 @@
 @section('content')
     <div class="space-y-6">
         <livewire:dashboard-widgets />
-        <livewire:loans.loan-calendar />
+
+        {{-- Calculadora --}}
+        <div class="flex justify-end">
+            <livewire:loans.loan-calculator />
+        </div>
+
+        {{-- Tabla simple de préstamos --}}
         <livewire:loans.loan-table />
-        <livewire:loans.loan-calculator />
     </div>
 @endsection

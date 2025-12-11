@@ -19,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Compartir nombre del negocio con todas las vistas
+        view()->composer('*', function ($view) {
+            $settings = \App\Models\BusinessSetting::first();
+            config(['app.name' => $settings->business_name ?? 'Lending Money']);
+        });
     }
 }

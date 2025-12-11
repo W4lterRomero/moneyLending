@@ -4,9 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name', 'Money Landing') }}</title>
+    <title>{{ config('app.name', 'Lending Money') }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
@@ -15,11 +14,13 @@
     <div class="min-h-screen flex">
         <aside class="w-72 hidden md:flex flex-col p-4 gap-4 sidebar">
             <div class="panel-apple p-4">
-                <div class="text-xl font-semibold text-slate-900 flex items-center gap-2">
-                    <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-sky-100 text-sky-600">
-                        <x-icon name="chart-bar" class="w-5 h-5" />
+                <div class="text-xl font-semibold text-slate-900 flex items-center gap-3">
+                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-sky-600 text-white shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
                     </span>
-                    Money Landing
+                    <span>Lending Money</span>
                 </div>
                 <div class="text-xs text-slate-500 mt-1">Gestión de préstamos</div>
             </div>
@@ -35,9 +36,6 @@
                 </a>
                 <a href="{{ route('payments.index') }}" class="sidebar-link {{ request()->is('payments*') ? 'sidebar-link--active' : '' }}">
                     <x-icon name="banknotes" class="w-4 h-4" /> Pagos
-                </a>
-                <a href="{{ route('reports.index') }}" class="sidebar-link {{ request()->is('reports*') ? 'sidebar-link--active' : '' }}">
-                    <x-icon name="document-chart" class="w-4 h-4" /> Reportes
                 </a>
                 <a href="{{ route('settings.business') }}" class="sidebar-link {{ request()->is('settings*') ? 'sidebar-link--active' : '' }}">
                     <x-icon name="cog" class="w-4 h-4" /> Configuración
@@ -60,9 +58,10 @@
                             class="btn-outline-apple text-sm">
                             Búsqueda (⌘/Ctrl + K)
                         </button>
-                        <button @click="$store.theme.toggle()" aria-label="Cambiar tema" class="btn-outline-apple px-3 py-2">
-                            <x-icon x-show="$store.theme.current === 'light'" name="moon" class="w-5 h-5" />
-                            <x-icon x-show="$store.theme.current === 'dark'" name="sun" class="w-5 h-5" />
+                        <button @click="$store.theme.toggle()" aria-label="Cambiar tema" class="btn-outline-apple px-3 py-2 flex items-center gap-2">
+                            <x-icon x-show="$store.theme.current === 'light'" name="moon" class="w-4 h-4" />
+                            <x-icon x-show="$store.theme.current === 'dark'" name="sun" class="w-4 h-4" />
+                            <span class="text-xs">Tema</span>
                         </button>
                         @auth
                             <div class="user-chip">
@@ -120,9 +119,6 @@
                 </a>
                 <a href="{{ route('payments.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->is('payments*') ? 'bg-slate-100 text-sky-600' : '' }}">
                     <x-icon name="banknotes" class="w-4 h-4" /> Pagos
-                </a>
-                <a href="{{ route('reports.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->is('reports*') ? 'bg-slate-100 text-sky-600' : '' }}">
-                    <x-icon name="document-chart" class="w-4 h-4" /> Reportes
                 </a>
                 <a href="{{ route('settings.business') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->is('settings*') ? 'bg-slate-100 text-sky-600' : '' }}">
                     <x-icon name="cog" class="w-4 h-4" /> Configuración

@@ -29,9 +29,10 @@
                 <div>
                     <label class="block text-xs text-slate-500">Frecuencia</label>
                     <select wire:model.live="frequency" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm">
-                        <option value="monthly">Mensual</option>
-                        <option value="biweekly">Quincenal</option>
+                        <option value="daily">Diario</option>
                         <option value="weekly">Semanal</option>
+                        <option value="biweekly">Quincenal</option>
+                        <option value="monthly">Mensual</option>
                     </select>
                 </div>
             </div>
