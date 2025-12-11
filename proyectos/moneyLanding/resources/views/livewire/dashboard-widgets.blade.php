@@ -67,6 +67,61 @@
         </div>
     </div>
 
+    {{-- Top Profesiones y Empresas --}}
+    <div class="grid md:grid-cols-2 gap-4">
+        @if(!empty($metrics['top_occupations']) && count($metrics['top_occupations']) > 0)
+            <div class="card border border-slate-200/80 shadow-sm">
+                <div class="text-sm font-semibold text-slate-800 mb-3">Top Profesiones</div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-slate-500 uppercase bg-slate-50">
+                            <tr>
+                                <th class="px-4 py-2">Profesión</th>
+                                <th class="px-4 py-2 text-right">Préstamos</th>
+                                <th class="px-4 py-2 text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @foreach($metrics['top_occupations'] as $occupation)
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-4 py-2 font-medium text-slate-900">{{ $occupation->name }}</td>
+                                    <td class="px-4 py-2 text-right text-slate-600">{{ $occupation->count }}</td>
+                                    <td class="px-4 py-2 text-right font-semibold text-sky-600">${{ number_format($occupation->total_amount, 2) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+
+        @if(!empty($metrics['top_companies']) && count($metrics['top_companies']) > 0)
+            <div class="card border border-slate-200/80 shadow-sm">
+                <div class="text-sm font-semibold text-slate-800 mb-3">Top Empresas</div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-slate-500 uppercase bg-slate-50">
+                            <tr>
+                                <th class="px-4 py-2">Empresa</th>
+                                <th class="px-4 py-2 text-right">Préstamos</th>
+                                <th class="px-4 py-2 text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @foreach($metrics['top_companies'] as $company)
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-4 py-2 font-medium text-slate-900">{{ $company->name }}</td>
+                                    <td class="px-4 py-2 text-right text-slate-600">{{ $company->count }}</td>
+                                    <td class="px-4 py-2 text-right font-semibold text-sky-600">${{ number_format($company->total_amount, 2) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+    </div>
+
     <div class="text-xs text-slate-500 flex items-center gap-2">
         <span>Última actualización:</span>
         <span class="font-semibold text-slate-700">{{ $refreshedAt }}</span>

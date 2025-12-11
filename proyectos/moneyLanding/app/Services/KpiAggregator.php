@@ -40,11 +40,37 @@ class KpiAggregator
                 ->count();
             $totalInstallments = Installment::when($start, fn ($q) => $q->whereBetween('due_date', [$start, $end]))->count();
 
+            // Top Profesiones (Occupation)
+            $topOccupations = Loan::query()
+                ->join('clients', 'loans.client_id', '=', 'clients.id')
+                ->when($start, fn ($q) => $q->whereBetween('loans.start_date', [$start, $end]))
+                ->whereNotNull('clients.occupation')
+                ->where('clients.occupation', '!=', '')
+                ->selectRaw('clients.occupation as name, count(*) as count, sum(loans.principal) as total_amount')
+                ->groupBy('clients.occupation')
+                ->orderByDesc('total_amount')
+                ->limit(5)
+                ->get();
+
+            // Top Empresas (Company Name)
+            $topCompanies = Loan::query()
+                ->join('clients', 'loans.client_id', '=', 'clients.id')
+                ->when($start, fn ($q) => $q->whereBetween('loans.start_date', [$start, $end]))
+                ->whereNotNull('clients.company_name')
+                ->where('clients.company_name', '!=', '')
+                ->selectRaw('clients.company_name as name, count(*) as count, sum(loans.principal) as total_amount')
+                ->groupBy('clients.company_name')
+                ->orderByDesc('total_amount')
+                ->limit(5)
+                ->get();
+
             return [
                 'total_lent' => $totalLent,
                 'total_collected' => $totalCollected,
                 'active_loans' => $activeLoans,
                 'delinquency_rate' => $totalInstallments > 0 ? round(($delinquentInstallments / $totalInstallments) * 100, 2) : 0,
+                'top_occupations' => $topOccupations,
+                'top_companies' => $topCompanies,
                 'range' => [$start?->toDateString(), $end?->toDateString()],
             ];
         });

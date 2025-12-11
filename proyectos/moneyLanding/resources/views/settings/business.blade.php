@@ -14,16 +14,18 @@
                 <div>
                     <label class="block text-sm text-slate-600">Nombre de la página web</label>
                     <input type="text" name="business_name" value="{{ old('business_name', $settings->business_name ?? 'Lending Money') }}"
-                        class="w-full px-3 py-2 rounded-lg border border-slate-200" placeholder="Lending Money" />
+                        class="w-full px-3 py-2 rounded-lg border border-slate-200 @error('business_name') border-red-500 @enderror" placeholder="Lending Money" />
                     <p class="text-xs text-slate-400 mt-1">Este nombre aparecerá en el título de la pestaña del navegador</p>
+                    @error('business_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-sm text-slate-600">Moneda</label>
-                    <select name="currency" class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                    <select name="currency" class="w-full px-3 py-2 rounded-lg border border-slate-200 @error('currency') border-red-500 @enderror">
                         <option value="USD" @selected(old('currency', $settings->currency ?? 'USD') === 'USD')>USD ($)</option>
                         <option value="EUR" @selected(old('currency', $settings->currency ?? 'USD') === 'EUR')>EUR (€)</option>
                         <option value="MXN" @selected(old('currency', $settings->currency ?? 'USD') === 'MXN')>MXN ($)</option>
                     </select>
+                    @error('currency') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
             <div class="flex justify-end">
