@@ -29,18 +29,15 @@ class DashboardWidgets extends Component
 
     public function refresh(): void
     {
-        cache()->forget('dashboard.metrics');
-        $this->aggregator->metrics('month', null, true);
-        $this->refreshData();
+        // Forzar actualización en el servicio (limpia la caché interna del servicio)
+        $this->metrics = $this->aggregator->metrics('all', null, true);
+        $this->refreshedAt = now()->format('d/m/Y H:i');
     }
 
     protected function refreshData(): void
     {
-        // Caché agresivo de 1 hora para Raspberry Pi
-        $this->metrics = cache()->remember('dashboard.metrics', 3600, function () {
-            return $this->aggregator->metrics('month');
-        });
-
+        // Obtener métricas (usa la caché del servicio si existe)
+        $this->metrics = $this->aggregator->metrics('all');
         $this->refreshedAt = now()->format('d/m/Y H:i');
     }
 }

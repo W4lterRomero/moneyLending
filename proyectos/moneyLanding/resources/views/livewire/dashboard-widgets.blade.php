@@ -6,7 +6,8 @@
         </div>
         <button wire:click="refresh" wire:loading.attr="disabled" class="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:text-sky-600 hover:border-sky-200 transition-colors shadow-sm">
             <svg wire:loading.class="animate-spin" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-            <span>Actualizar</span>
+            <span wire:loading.remove>Actualizar</span>
+            <span wire:loading>Actualizando...</span>
         </button>
     </div>
 
@@ -69,9 +70,9 @@
 
     {{-- Top Profesiones y Empresas --}}
     <div class="grid md:grid-cols-2 gap-4">
-        @if(!empty($metrics['top_occupations']) && count($metrics['top_occupations']) > 0)
-            <div class="card border border-slate-200/80 shadow-sm">
-                <div class="text-sm font-semibold text-slate-800 mb-3">Top Profesiones</div>
+        <div class="card border border-slate-200/80 shadow-sm">
+            <div class="text-sm font-semibold text-slate-800 mb-3">Top Profesiones</div>
+            @if(!empty($metrics['top_occupations']) && count($metrics['top_occupations']) > 0)
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left">
                         <thead class="text-xs text-slate-500 uppercase bg-slate-50">
@@ -92,12 +93,17 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-        @endif
+            @else
+                <div class="flex flex-col items-center justify-center py-8 text-slate-400">
+                    <svg class="w-10 h-10 mb-2 opacity-50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+                    <p class="text-sm">No hay datos de profesiones en este periodo.</p>
+                </div>
+            @endif
+        </div>
 
-        @if(!empty($metrics['top_companies']) && count($metrics['top_companies']) > 0)
-            <div class="card border border-slate-200/80 shadow-sm">
-                <div class="text-sm font-semibold text-slate-800 mb-3">Top Empresas</div>
+        <div class="card border border-slate-200/80 shadow-sm">
+            <div class="text-sm font-semibold text-slate-800 mb-3">Top Empresas</div>
+            @if(!empty($metrics['top_companies']) && count($metrics['top_companies']) > 0)
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left">
                         <thead class="text-xs text-slate-500 uppercase bg-slate-50">
@@ -118,8 +124,13 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-        @endif
+            @else
+                <div class="flex flex-col items-center justify-center py-8 text-slate-400">
+                    <svg class="w-10 h-10 mb-2 opacity-50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    <p class="text-sm">No hay datos de empresas en este periodo.</p>
+                </div>
+            @endif
+        </div>
     </div>
 
     <div class="text-xs text-slate-500 flex items-center gap-2">

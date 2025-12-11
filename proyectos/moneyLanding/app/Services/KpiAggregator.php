@@ -33,7 +33,6 @@ class KpiAggregator
             $totalLent = $loanQuery->sum('principal');
             $totalCollected = $paymentQuery->sum('amount');
             $activeLoans = Loan::where('status', LoanStatus::Active)
-                ->when($start, fn ($q) => $q->whereBetween('start_date', [$start, $end]))
                 ->count();
             $delinquentInstallments = Installment::where('status', InstallmentStatus::Overdue)
                 ->when($start, fn ($q) => $q->whereBetween('due_date', [$start, $end]))
@@ -94,6 +93,7 @@ class KpiAggregator
             'today' => [Carbon::today()->startOfDay(), Carbon::today()->endOfDay()],
             'week' => [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()],
             'year' => [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()],
+            'all' => [null, null],
             default => [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()],
         };
     }
