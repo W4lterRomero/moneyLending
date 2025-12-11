@@ -14,7 +14,7 @@ class LoanTable extends Component
     public string $search = '';
     public string $status = 'all';
     public string $range = 'month';
-    public array $columns = ['client', 'principal', 'interest', 'frequency'];
+    public array $columns = ['client', 'principal', 'interest', 'frequency', 'profit'];
 
     protected $queryString = [
         'search' => ['except' => ''],

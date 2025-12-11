@@ -4,17 +4,25 @@
                 <input type="text" wire:model.live.debounce.500ms="search" placeholder="Buscar..."
                 class="px-3 py-2 rounded-lg border border-slate-200 focus:border-sky-400 focus:ring focus:ring-sky-100 text-sm w-full md:w-64" />
 
-                <select wire:model.live="status"
-                class="px-3 py-2 rounded-lg border border-slate-200 focus:border-sky-400 focus:ring focus:ring-sky-100 text-sm w-full md:w-auto">
-                    <option value="all">Todos</option>
-                    <option value="active">Activos</option>
-                    <option value="delinquent">Morosos</option>
-                    <option value="completed">Completados</option>
-                </select>
+                <div class="flex bg-slate-100 p-1 rounded-lg">
+                    @foreach([
+                        'all' => 'Todos',
+                        'active' => 'Activos',
+                        'delinquent' => 'Morosos',
+                        'completed' => 'Completados'
+                    ] as $value => $label)
+                        <button
+                            wire:click="$set('status', '{{ $value }}')"
+                            class="px-3 py-1.5 text-xs font-medium rounded-md transition-all {{ $status === $value ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}"
+                        >
+                            {{ $label }}
+                        </button>
+                    @endforeach
+                </div>
             </div>
 
             <div class="flex gap-2 flex-wrap items-center">
-                @foreach (['client' => 'Cliente', 'principal' => 'Monto', 'interest' => 'Interés %', 'frequency' => 'Frecuencia'] as $key => $label)
+                @foreach (['client' => 'Cliente', 'principal' => 'Monto', 'interest' => 'Interés %', 'frequency' => 'Frecuencia', 'profit' => 'Ganancia'] as $key => $label)
                     <label class="inline-flex items-center gap-2 text-xs bg-slate-100 px-2 py-1 rounded-lg cursor-pointer">
                         <input type="checkbox" wire:click="toggleColumn('{{ $key }}')" @checked(in_array($key, $columns)) />
                         {{ $label }}
@@ -28,14 +36,26 @@
             @foreach ($loans as $loan)
                 <div class="card border border-slate-200 rounded-xl p-3 shadow-sm">
                     <div class="flex items-start justify-between gap-2">
-                        <div>
-                            <a href="{{ route('loans.show', $loan) }}" class="font-semibold text-slate-800 hover:text-sky-600">{{ $loan->client?->name }}</a>
-                            <div class="text-xs text-slate-500">Monto: ${{ number_format($loan->principal, 2) }}</div>
-                            <div class="text-xs text-slate-500">Interés: {{ number_format($loan->interest_rate, 2) }}%</div>
-                            @php
-                                $freqLabels = ['daily' => 'Diario', 'weekly' => 'Semanal', 'biweekly' => 'Quincenal', 'monthly' => 'Mensual'];
-                            @endphp
-                            <div class="text-xs text-slate-500">Frecuencia: {{ $freqLabels[$loan->frequency] ?? $loan->frequency }}</div>
+                        <div class="flex gap-3">
+                            @if($loan->client->photo_path)
+                                <img src="{{ Storage::url($loan->client->photo_path) }}" class="w-10 h-10 rounded-full object-cover" alt="{{ $loan->client->name }}">
+                            @else
+                                <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 text-xs font-bold shrink-0">
+                                    {{ substr($loan->client->name, 0, 2) }}
+                                </div>
+                            @endif
+                            <div>
+                                <a href="{{ route('loans.show', $loan) }}" class="font-semibold text-slate-800 hover:text-sky-600">{{ $loan->client?->name }}</a>
+                                <div class="text-xs text-slate-500">Monto: ${{ number_format($loan->principal, 2) }}</div>
+                                <div class="text-xs text-emerald-600 font-medium" title="Total a pagar: ${{ number_format($loan->total_amount, 2) }}">
+                                    Ganancia: ${{ number_format($loan->total_amount - $loan->principal, 2) }}
+                                </div>
+                                <div class="text-xs text-slate-500">Interés: {{ number_format($loan->interest_rate, 2) }}%</div>
+                                @php
+                                    $freqLabels = ['daily' => 'Diario', 'weekly' => 'Semanal', 'biweekly' => 'Quincenal', 'monthly' => 'Mensual'];
+                                @endphp
+                                <div class="text-xs text-slate-500">Frecuencia: {{ $freqLabels[$loan->frequency] ?? $loan->frequency }}</div>
+                            </div>
                         </div>
                         <a href="{{ route('loans.show', $loan) }}" class="text-sky-600 text-sm hover:underline">Ver</a>
                     </div>
@@ -60,6 +80,9 @@
                         @if (in_array('frequency', $columns))
                             <th class="py-2 pr-4">Frecuencia</th>
                         @endif
+                        @if (in_array('profit', $columns))
+                            <th class="py-2 pr-4">Ganancia</th>
+                        @endif
                         <th class="py-2 pr-4">Acciones</th>
                     </tr>
                 </thead>
@@ -68,7 +91,16 @@
                         <tr class="hover:bg-slate-50">
                             @if (in_array('client', $columns))
                                 <td class="py-3 pr-4 font-semibold text-slate-800">
-                                    <a href="{{ route('loans.show', $loan) }}" class="hover:text-sky-600">{{ $loan->client?->name }}</a>
+                                    <div class="flex items-center gap-3">
+                                        @if($loan->client->photo_path)
+                                            <img src="{{ Storage::url($loan->client->photo_path) }}" class="w-8 h-8 rounded-full object-cover" alt="{{ $loan->client->name }}">
+                                        @else
+                                            <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 text-xs font-bold">
+                                                {{ substr($loan->client->name, 0, 2) }}
+                                            </div>
+                                        @endif
+                                        <a href="{{ route('loans.show', $loan) }}" class="hover:text-sky-600">{{ $loan->client?->name }}</a>
+                                    </div>
                                 </td>
                             @endif
                             @if (in_array('principal', $columns))
@@ -83,6 +115,11 @@
                                         $freqLabels = ['daily' => 'Diario', 'weekly' => 'Semanal', 'biweekly' => 'Quincenal', 'monthly' => 'Mensual'];
                                     @endphp
                                     {{ $freqLabels[$loan->frequency] ?? $loan->frequency }}
+                                </td>
+                            @endif
+                            @if (in_array('profit', $columns))
+                                <td class="py-3 pr-4 text-emerald-600 font-medium" title="Total a pagar: ${{ number_format($loan->total_amount, 2) }}">
+                                    ${{ number_format($loan->total_amount - $loan->principal, 2) }}
                                 </td>
                             @endif
                             <td class="py-3 pr-4">
