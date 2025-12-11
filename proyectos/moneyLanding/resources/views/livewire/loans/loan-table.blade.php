@@ -14,7 +14,7 @@
         </div>
 
         <div class="flex gap-2 flex-wrap items-center">
-            @foreach (['client' => 'Cliente', 'principal' => 'Monto', 'term_months' => 'Plazo', 'frequency' => 'Frecuencia'] as $key => $label)
+            @foreach (['client' => 'Cliente', 'principal' => 'Monto', 'frequency' => 'Frecuencia'] as $key => $label)
                 <label class="inline-flex items-center gap-2 text-xs bg-slate-100 px-2 py-1 rounded-lg cursor-pointer">
                     <input type="checkbox" wire:click="toggleColumn('{{ $key }}')" @checked(in_array($key, $columns)) />
                     {{ $label }}
@@ -33,9 +33,6 @@
                     @if (in_array('principal', $columns))
                         <th class="py-2 pr-4">Monto</th>
                     @endif
-                    @if (in_array('term_months', $columns))
-                        <th class="py-2 pr-4">Plazo</th>
-                    @endif
                     @if (in_array('frequency', $columns))
                         <th class="py-2 pr-4">Frecuencia</th>
                     @endif
@@ -52,9 +49,6 @@
                         @endif
                         @if (in_array('principal', $columns))
                             <td class="py-3 pr-4">${{ number_format($loan->principal, 2) }}</td>
-                        @endif
-                        @if (in_array('term_months', $columns))
-                            <td class="py-3 pr-4">{{ $loan->term_months }} meses</td>
                         @endif
                         @if (in_array('frequency', $columns))
                             <td class="py-3 pr-4">
