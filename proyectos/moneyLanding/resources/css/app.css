@@ -443,3 +443,18 @@ select option {
 .dark .user-chip {
     background: rgba(255, 255, 255, 0.08);
 }
+
+/* Custom Loan Row Hover Fix */
+.custom-loan-row {
+    transition: background-color 0.2s ease;
+}
+
+.custom-loan-row:hover {
+    background-color: #f8fafc;
+    /* slate-50 */
+}
+
+.dark .custom-loan-row:hover {
+    background-color: #1e293b !important;
+    /* slate-800 */
+}

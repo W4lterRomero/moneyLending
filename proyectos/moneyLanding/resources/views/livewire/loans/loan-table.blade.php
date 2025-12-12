@@ -63,7 +63,7 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse ($loans as $loan)
-                        <tr class="hover:bg-slate-50">
+                        <tr class="custom-loan-row transition-colors duration-200">
                             <td class="py-3 pr-4 font-semibold text-slate-800">
                                 <div class="flex items-center gap-3">
                                     @if($loan->client->photo_path)
