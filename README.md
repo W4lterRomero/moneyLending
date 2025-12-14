@@ -1,6 +1,8 @@
-## Money Landing · Sistema de Gestión de Préstamos
+# Money Landing
 
-Stack: Laravel 12 (PHP 8.2), Fortify, Livewire 3, Vite + Blade + Tailwind, MySQL/PostgreSQL, Chart.js, FullCalendar, Maatwebsite/Excel, DomPDF, Scout (driver database).
+Micro-lending SaaS developed with Laravel & Livewire. Features: Real-time interest calculation (Strategy Pattern), optimistic UI updates, and Dockerized deployment optimized for ARM architecture (Raspberry Pi).
+
+**Tech Stack:** Laravel 12 (PHP 8.2), Fortify, Livewire 3, Vite + Blade + Tailwind, MySQL/PostgreSQL, Chart.js, FullCalendar, Maatwebsite/Excel, DomPDF, Scout (driver database).
 
 ### Características
 - Autenticación Fortify (login, registro, recordar, verificación y recuperación de contraseña).
