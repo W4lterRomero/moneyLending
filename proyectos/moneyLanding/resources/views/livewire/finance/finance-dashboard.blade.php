@@ -172,9 +172,66 @@
     {{-- Transactions Section --}}
     <div :class="$store.theme.current === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'" 
          class="rounded-xl border p-4 shadow-sm transition-colors duration-200">
-        <div class="flex items-center justify-between mb-3">
-            <h2 :class="$store.theme.current === 'dark' ? 'text-white' : 'text-slate-800'" class="text-lg font-semibold transition-colors duration-200">Historial</h2>
-            <div :class="$store.theme.current === 'dark' ? 'bg-slate-700' : 'bg-slate-100'" class="flex gap-1 p-1 rounded-lg transition-colors duration-200">
+        {{-- Header with Title and Date Range Badge --}}
+        <div class="flex flex-col gap-3 mb-4">
+            <div class="flex items-center justify-between">
+                <h2 :class="$store.theme.current === 'dark' ? 'text-white' : 'text-slate-800'" class="text-lg font-semibold transition-colors duration-200">Historial</h2>
+                {{-- Date Range Badge --}}
+                <div class="flex items-center gap-2 px-3 py-1.5 bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 rounded-lg text-xs font-medium">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <span>{{ $this->getDateRangeLabel() }}</span>
+                </div>
+            </div>
+            
+            {{-- Date Range Selector --}}
+            <div class="flex flex-wrap items-center gap-2">
+                <div :class="$store.theme.current === 'dark' ? 'bg-slate-700' : 'bg-slate-100'" class="flex gap-1 p-1 rounded-lg transition-colors duration-200">
+                    <button type="button" wire:click="$set('dateRange', 'this_month')" 
+                        :class="$store.theme.current === 'dark' ? 
+                            ({{ $dateRange === 'this_month' ? "'bg-sky-500 text-white shadow'" : "'text-slate-400 hover:text-slate-300'" }}) : 
+                            ({{ $dateRange === 'this_month' ? "'bg-sky-500 text-white shadow'" : "'text-slate-500 hover:text-slate-700'" }})"
+                        class="px-3 py-1.5 text-xs rounded-md transition-colors font-medium">
+                        Este mes
+                    </button>
+                    <button type="button" wire:click="$set('dateRange', 'last_30')" 
+                        :class="$store.theme.current === 'dark' ? 
+                            ({{ $dateRange === 'last_30' ? "'bg-sky-500 text-white shadow'" : "'text-slate-400 hover:text-slate-300'" }}) : 
+                            ({{ $dateRange === 'last_30' ? "'bg-sky-500 text-white shadow'" : "'text-slate-500 hover:text-slate-700'" }})"
+                        class="px-3 py-1.5 text-xs rounded-md transition-colors font-medium">
+                        Últimos 30d
+                    </button>
+                    <button type="button" wire:click="$set('dateRange', 'all')" 
+                        :class="$store.theme.current === 'dark' ? 
+                            ({{ $dateRange === 'all' ? "'bg-sky-500 text-white shadow'" : "'text-slate-400 hover:text-slate-300'" }}) : 
+                            ({{ $dateRange === 'all' ? "'bg-sky-500 text-white shadow'" : "'text-slate-500 hover:text-slate-700'" }})"
+                        class="px-3 py-1.5 text-xs rounded-md transition-colors font-medium">
+                        Todo
+                    </button>
+                    <button type="button" wire:click="$set('dateRange', 'custom')" 
+                        :class="$store.theme.current === 'dark' ? 
+                            ({{ $dateRange === 'custom' ? "'bg-sky-500 text-white shadow'" : "'text-slate-400 hover:text-slate-300'" }}) : 
+                            ({{ $dateRange === 'custom' ? "'bg-sky-500 text-white shadow'" : "'text-slate-500 hover:text-slate-700'" }})"
+                        class="px-3 py-1.5 text-xs rounded-md transition-colors font-medium">
+                        Rango
+                    </button>
+                </div>
+                
+                {{-- Custom Date Range Inputs --}}
+                @if($dateRange === 'custom')
+                    <div class="flex items-center gap-2">
+                        <input type="date" wire:model.live="startDate" 
+                            class="px-2 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-sky-500" />
+                        <span class="text-slate-400 text-xs">→</span>
+                        <input type="date" wire:model.live="endDate" 
+                            class="px-2 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-sky-500" />
+                    </div>
+                @endif
+            </div>
+            
+            {{-- Type Filter --}}
+            <div :class="$store.theme.current === 'dark' ? 'bg-slate-700' : 'bg-slate-100'" class="flex gap-1 p-1 rounded-lg transition-colors duration-200 w-fit">
                 <button type="button" wire:click="$set('filterType', '')" 
                     :class="$store.theme.current === 'dark' ? 
                         ({{ $filterType === '' ? "'bg-slate-600 text-white'" : "'text-slate-400'" }}) : 
@@ -243,6 +300,13 @@
                         </button>
                     </div>
                 @endforeach
+            </div>
+        @endif
+        
+        {{-- Pagination --}}
+        @if($transactions->hasPages())
+            <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
+                {{ $transactions->links() }}
             </div>
         @endif
     </div>

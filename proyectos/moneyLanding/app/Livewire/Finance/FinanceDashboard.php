@@ -7,9 +7,12 @@ use App\Models\FinanceCategory;
 use App\Models\FinanceTransaction;
 use Livewire\Attributes\Url;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class FinanceDashboard extends Component
 {
+    use WithPagination;
+
     // Account Modal
     public bool $showAccountModal = false;
     public ?int $editingAccountId = null;
@@ -33,9 +36,50 @@ class FinanceDashboard extends Component
     #[Url]
     public string $filterType = '';
 
+    // Date Range Filter
+    #[Url]
+    public string $dateRange = 'this_month';
+    public ?string $startDate = null;
+    public ?string $endDate = null;
+
     public function mount(): void
     {
         $this->transactionDate = now()->format('Y-m-d');
+    }
+
+    // Reset page when filters change
+    public function updatedDateRange(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFilterType(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedStartDate(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedEndDate(): void
+    {
+        $this->resetPage();
+    }
+
+    // Helper to get current filter label
+    public function getDateRangeLabel(): string
+    {
+        return match($this->dateRange) {
+            'this_month' => now()->translatedFormat('F Y'),
+            'last_30' => 'Últimos 30 días',
+            'all' => 'Todo el historial',
+            'custom' => $this->startDate && $this->endDate 
+                ? date('d/m/Y', strtotime($this->startDate)) . ' - ' . date('d/m/Y', strtotime($this->endDate))
+                : 'Rango personalizado',
+            default => 'Este mes',
+        };
     }
 
     // ========== ACCOUNT METHODS ==========
@@ -188,13 +232,22 @@ class FinanceDashboard extends Component
 
         $transactionsQuery = FinanceTransaction::with('account')
             ->when($this->filterType, fn($q) => $q->where('type', $this->filterType))
+            ->when($this->dateRange === 'this_month', fn($q) => 
+                $q->whereMonth('transaction_date', now()->month)
+                  ->whereYear('transaction_date', now()->year)
+            )
+            ->when($this->dateRange === 'last_30', fn($q) => 
+                $q->where('transaction_date', '>=', now()->subDays(30))
+            )
+            ->when($this->dateRange === 'custom' && $this->startDate && $this->endDate, fn($q) =>
+                $q->whereBetween('transaction_date', [$this->startDate, $this->endDate])
+            )
             ->orderByDesc('transaction_date')
-            ->orderByDesc('created_at')
-            ->limit(20);
+            ->orderByDesc('created_at');
 
-        $transactions = $transactionsQuery->get();
+        $transactions = $transactionsQuery->paginate(15);
 
-        // Summary stats
+        // Summary stats (for current filter period)
         $totalBalance = Account::where('is_active', true)->sum('current_balance');
         $todayIncome = FinanceTransaction::where('type', 'income')
             ->whereDate('transaction_date', today())

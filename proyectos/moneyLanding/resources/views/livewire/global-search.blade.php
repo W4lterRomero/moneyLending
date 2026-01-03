@@ -70,7 +70,9 @@
             </div>
             
             <div class="text-xs text-slate-400 dark:text-slate-500 text-center pt-2 border-t border-slate-100 dark:border-slate-700">
-                <kbd class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-[10px]">ESC</kbd> para cerrar
+                <kbd class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-[10px]">ESC</kbd> cerrar
+                <span class="mx-2">•</span>
+                <kbd class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-[10px]">&gt;</kbd> comandos rápidos
             </div>
         </div>
     </div>
