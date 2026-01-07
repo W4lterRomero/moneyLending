@@ -1,8 +1,38 @@
-<div x-data="{ open: false }" 
-    @keydown.window.prevent.ctrl.k="open = true; $nextTick(() => $refs.searchInput.focus())"
-    @keydown.window.prevent.meta.k="open = true; $nextTick(() => $refs.searchInput.focus())"
-    @open-search.window="open = true; $nextTick(() => $refs.searchInput.focus())"
-    @keydown.escape.window="open = false">
+<div x-data="{ 
+    open: false,
+    selectedIndex: -1,
+    get resultsCount() {
+        return document.querySelectorAll('[data-search-result]').length;
+    },
+    navigate(direction) {
+        const count = this.resultsCount;
+        if (count === 0) return;
+        
+        if (direction === 'down') {
+            this.selectedIndex = this.selectedIndex < count - 1 ? this.selectedIndex + 1 : 0;
+        } else {
+            this.selectedIndex = this.selectedIndex > 0 ? this.selectedIndex - 1 : count - 1;
+        }
+        
+        // Scroll into view
+        const selected = document.querySelector(`[data-search-result][data-index='${this.selectedIndex}']`);
+        if (selected) selected.scrollIntoView({ block: 'nearest' });
+    },
+    selectCurrent() {
+        const selected = document.querySelector(`[data-search-result][data-index='${this.selectedIndex}']`);
+        if (selected) {
+            window.location.href = selected.href;
+        }
+    },
+    resetSelection() {
+        this.selectedIndex = -1;
+    }
+}" 
+    @keydown.window.prevent.ctrl.k="open = true; selectedIndex = -1; $nextTick(() => $refs.searchInput.focus())"
+    @keydown.window.prevent.meta.k="open = true; selectedIndex = -1; $nextTick(() => $refs.searchInput.focus())"
+    @open-search.window="open = true; selectedIndex = -1; $nextTick(() => $refs.searchInput.focus())"
+    @keydown.escape.window="open = false"
+    x-init="$watch('open', value => { if (!value) resetSelection() })">
     
     {{-- Backdrop --}}
     <div x-show="open" 
@@ -37,14 +67,18 @@
                     </div>
                     <input type="text" wire:model.live.debounce.300ms="term" placeholder="Buscar clientes, préstamos, pagos..."
                         class="w-full pl-10 pr-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-sm placeholder-slate-400" 
-                        x-ref="searchInput" />
+                        x-ref="searchInput"
+                        @keydown.arrow-down.prevent="navigate('down')"
+                        @keydown.arrow-up.prevent="navigate('up')"
+                        @keydown.enter.prevent="selectCurrent()"
+                        @input="resetSelection()" />
                 </div>
                 <button type="button" @click="open = false" class="px-3 py-2 text-sm text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
                     Cerrar
                 </button>
             </div>
 
-            <div class="max-h-80 overflow-auto divide-y divide-slate-100 dark:divide-slate-700">
+            <div class="max-h-80 overflow-auto divide-y divide-slate-100 dark:divide-slate-700" x-ref="resultsList">
                 @if (strlen(trim($term)) < $minLength)
                     <div class="py-3 text-sm text-slate-500 dark:text-slate-400 text-center">Escribe al menos {{ $minLength }} caracteres para buscar.</div>
                 @else
@@ -52,10 +86,15 @@
                         Buscando...
                     </div>
                     <div wire:loading.remove wire:target="term">
-                        @forelse ($results as $result)
-                            <a href="{{ $result['url'] ?? '#' }}" class="block py-3 hover:bg-slate-50 dark:hover:bg-slate-700 px-2 rounded-lg transition-colors">
+                        @forelse ($results as $index => $result)
+                            <a href="{{ $result['url'] ?? '#' }}" 
+                               data-search-result
+                               data-index="{{ $index }}"
+                               class="block py-3 px-2 rounded-lg transition-colors"
+                               :class="selectedIndex === {{ $index }} ? 'bg-sky-50 dark:bg-sky-900/30 ring-1 ring-sky-200 dark:ring-sky-700' : 'hover:bg-slate-50 dark:hover:bg-slate-700'"
+                               @mouseenter="selectedIndex = {{ $index }}">
                                 <div class="flex items-center justify-between">
-                                    <div class="text-sm font-semibold text-slate-800 dark:text-white">{{ $result['title'] }}</div>
+                                    <div class="text-sm font-semibold" :class="selectedIndex === {{ $index }} ? 'text-sky-700 dark:text-sky-300' : 'text-slate-800 dark:text-white'">{{ $result['title'] }}</div>
                                     <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 bg-slate-100 dark:bg-slate-600 px-2 py-0.5 rounded-full">{{ $result['type'] }}</div>
                                 </div>
                                 <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ $result['subtitle'] }}</div>
@@ -70,9 +109,13 @@
             </div>
             
             <div class="text-xs text-slate-400 dark:text-slate-500 text-center pt-2 border-t border-slate-100 dark:border-slate-700">
+                <kbd class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-[10px]">↑↓</kbd> navegar
+                <span class="mx-2">•</span>
+                <kbd class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-[10px]">Enter</kbd> seleccionar
+                <span class="mx-2">•</span>
                 <kbd class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-[10px]">ESC</kbd> cerrar
                 <span class="mx-2">•</span>
-                <kbd class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-[10px]">&gt;</kbd> comandos rápidos
+                <kbd class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-[10px]">&gt;</kbd> comandos
             </div>
         </div>
     </div>

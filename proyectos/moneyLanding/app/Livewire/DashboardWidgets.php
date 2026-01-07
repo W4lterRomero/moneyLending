@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Client;
 use App\Services\KpiAggregator;
 use Livewire\Component;
 
@@ -9,6 +10,11 @@ class DashboardWidgets extends Component
 {
     public array $metrics = [];
     public string $refreshedAt = '';
+    public $recentClients = [];
+    
+    // Client widget customization
+    public int $clientLimit = 5;
+    public string $clientOrder = 'recent'; // recent, name, loans
 
     protected KpiAggregator $aggregator;
 
@@ -25,6 +31,7 @@ class DashboardWidgets extends Component
         } else {
             $this->refreshData();
         }
+        $this->loadRecentClients();
     }
 
     public function render()
@@ -34,17 +41,48 @@ class DashboardWidgets extends Component
 
     public function refresh(): void
     {
-        sleep(1); // Pequeña pausa para feedback visual
-        // Forzar actualización en el servicio (limpia la caché interna del servicio)
+        sleep(1);
         $this->metrics = $this->aggregator->metrics('all', null, true);
         $this->refreshedAt = now()->format('d/m/Y H:i:s');
+        $this->loadRecentClients();
         $this->dispatch('dashboard-refreshed');
+    }
+
+    public function updatedClientLimit(): void
+    {
+        $this->loadRecentClients();
+    }
+
+    public function updatedClientOrder(): void
+    {
+        $this->loadRecentClients();
     }
 
     protected function refreshData(): void
     {
-        // Obtener métricas (usa la caché del servicio si existe)
         $this->metrics = $this->aggregator->metrics('all');
         $this->refreshedAt = now()->format('d/m/Y H:i:s');
+    }
+
+    protected function loadRecentClients(): void
+    {
+        $query = Client::query();
+        
+        // Apply ordering
+        switch ($this->clientOrder) {
+            case 'name':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'loans':
+                $query->withCount('loans')->orderByDesc('loans_count');
+                break;
+            default: // recent
+                $query->latest('created_at');
+        }
+        
+        $this->recentClients = $query
+            ->take($this->clientLimit)
+            ->get(['id', 'name', 'email', 'phone', 'created_at'])
+            ->toArray();
     }
 }
